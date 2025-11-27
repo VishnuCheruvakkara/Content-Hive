@@ -1,0 +1,44 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.python-version
+
+# ---- Virtual Environment ----
+env/
+venv/
+ENV/
+.venv/
+.env/
+
+# ---- Django ----
+*.log
+*.pot
+*.pyc
+staticfiles/
+media/
+local_settings.py
+
+# ---- Environment / Secrets ----
+*.env
+.env.*
+!.env.example
+
+# ---- IDE ----
+.vscode/
+.idea/
+*.swp
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Pycharm ----
+*.iml
+
+# ---- Migrations Cache (optional) ----
+# Uncomment if you want to ignore migrations
+# */migrations/*
+# !*/migrations/__init__.py
