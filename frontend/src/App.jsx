@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom';
+
+import RouterConfig from './routes/RouterConfig';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div className="p-8 text-center">
-        <h1 className="text-4xl font-bold text-blue-600">
-          Tailwind v4 with Vite + React ✔
-        </h1>
-      </div>
+      <BrowserRouter>
+        <RouterConfig />
+      </BrowserRouter>
     </>
   )
 }

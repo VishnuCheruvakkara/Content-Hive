@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+/* Define actual color values */
+:root {
+  --color-brand-1: #3D365C;
+  --color-brand-2: #7C4585;
+  --color-brand-3: #C95792;
+  --color-brand-4: #F8B55F;
+}
+
+/* Register theme tokens for Tailwind */
+@theme {
+  --color-brand-1: var(--color-brand-1);
+  --color-brand-2: var(--color-brand-2);
+  --color-brand-3: var(--color-brand-3);
+  --color-brand-4: var(--color-brand-4);
+}
