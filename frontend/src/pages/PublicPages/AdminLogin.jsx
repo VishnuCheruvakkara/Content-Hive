@@ -1,12 +1,12 @@
 import React from "react";
-import Header from "../components/Landing/Header";
-import Footer from "../components/Landing/Footer";
+import Header from "../../components/Landing/Header";
+import Footer from "../../components/Landing/Footer";
 
 function AdminLogin() {
     return (
         <>
             <Header/>
-            <div className="min-h-screen flex items-center justify-center bg-brand-3 text-white px-4">
+            <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4">
                 <div className="w-full max-w-md bg-white/10 backdrop-blur-xl p-8 rounded-2xl border border-white/10 shadow-2xl">
 
                     {/* Title */}

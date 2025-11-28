@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
     return (
-        <footer id="contact" className="bg-brand-1/95 text-white py-10">
+        <footer id="contact" className="bg-brand-1/95 text-white py-10 border-t border-white/20">
             <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-3">
@@ -32,7 +32,7 @@ function Footer() {
                 </div>
             </div>
 
-            <div className="mt-8 border-t border-white/6 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive — Built for MARLO exercise</div>
+            <div className="mt-8 border-t border-white/20 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive — Built for MARLO exercise</div>
         </footer>
     )
 }
