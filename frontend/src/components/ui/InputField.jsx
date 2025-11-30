@@ -50,7 +50,7 @@ function InputField({
 
             {/* Error message */}
             {meta.touched && meta.error && (
-                <div className="text-red-950 text-sm mt-1 font-semibold">{meta.error}</div>
+                <div className="text-brand-4 text-sm mt-1 font-semibold">{meta.error}</div>
             )}
 
         </div>

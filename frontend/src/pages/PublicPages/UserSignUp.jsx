@@ -16,30 +16,14 @@ import * as Yup from "yup";
 import publicAxios from "../../axios/PublicAxios";
 
 import toast from 'react-hot-toast';
+import SignupSchema from "../../validations/SignupSchema";
+import { useNavigate } from "react-router-dom";
 
-// ---------------- Validation Schema ----------------
-const SignupSchema = Yup.object().shape({
-    username: Yup.string()
-        .min(3, "Username must be at least 3 characters")
-        .required("Username is required"),
-
-    email: Yup.string()
-        .email("Invalid email")
-        .required("Email is required"),
-
-    password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Password is required"),
-
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords must match")
-        .required("Confirm password is required"),
-});
 
 function UserSignup() {
     const [showPass1, setShowPass1] = useState(false);
     const [showPass2, setShowPass2] = useState(false);
-
+    const navigate = useNavigate();
     const initialValues = {
         username: "",
         email: "",
@@ -47,7 +31,7 @@ function UserSignup() {
         confirmPassword: "",
     }
 
-    const handleSignupSubmit = async (values, { setSubmitting }) => {
+    const handleSignupSubmit = async (values, { setSubmitting,resetForm }) => {
         try {
             const res = await publicAxios.post("/users/sign-up/", {
                 username: values.username,
@@ -57,10 +41,12 @@ function UserSignup() {
 
             console.log("Signup Success:", res.data);
             toast.success("Account created, Welcome...")
+            resetForm();
+            navigate("/user");
 
         } catch (error) {
             console.log("Signup Error:", error.response?.data);
-            toast.error("Signup failed.")
+            toast.error("Signup failed. Please try again.")
         }
 
         setSubmitting(false);
@@ -76,7 +62,7 @@ function UserSignup() {
                     <h2 className="text-3xl font-bold text-center mb-2">Create an Account</h2>
                     <p className="text-center text-white/70 mb-8">Join ContentHive today</p>
 
-                    {/* ---------------- FORM START ---------------- */}
+                    
                     <Formik
                         initialValues={initialValues}
                         validationSchema={SignupSchema}
@@ -141,8 +127,7 @@ function UserSignup() {
                         )}
                     </Formik>
 
-                    {/* ---------------- FORM END ---------------- */}
-
+                    
                     <div className="my-6 flex items-center gap-4">
                         <div className="flex-1 h-px bg-white/20"></div>
                         <span className="text-white/40 text-sm">OR</span>

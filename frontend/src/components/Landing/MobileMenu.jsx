@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function MobileMenu() {
     return (
@@ -10,8 +11,8 @@ function MobileMenu() {
                 <a href="#pricing" className="hover:text-brand-4">Pricing</a>
                 <a href="#contact" className="hover:text-brand-4">Contact</a>
                 <div className="flex gap-2 mt-2">
-                    <a href="/login" className="flex-1 text-center px-3 py-2 rounded-md bg-brand-3">Login</a>
-                    <a href="/signup" className="flex-1 text-center px-3 py-2 rounded-md border border-brand-4 text-brand-4">Sign up</a>
+                    <Link to="/login" className="flex-1 text-center px-3 py-2 rounded-md bg-brand-3">Login</Link>
+                    <Link to="/signup" className="flex-1 text-center px-3 py-2 rounded-md border border-brand-4 text-brand-4">Sign up</Link>
                 </div>
             </div>
         </details>
