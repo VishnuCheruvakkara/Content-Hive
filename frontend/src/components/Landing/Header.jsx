@@ -6,18 +6,20 @@ import publicAxios from '../../axios/PublicAxios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { logoutSuccess } from '../../redux/Slice/userAuthSlice'
+import useAuth from '../../hooks/useAuth'
 
 function Header() {
+    const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     const handleLogout = async () => {
         try {
             await publicAxios.post("/users/logout/");
             dispatch(logoutSuccess());
             toast.success("Logged out successfully");
             navigate("/login");
-            
+
         } catch (err) {
             toast.error("Something went wrong while logging out.");
         }
@@ -39,14 +41,30 @@ function Header() {
                 </nav>
 
                 <div className="hidden md:flex items-center gap-3">
-                    {/* <a href="/login" className="px-4 py-2 rounded-lg bg-brand-3 hover:bg-brand-2 transition font-medium">Login</a> */}
-                    <Button onClick={() => navigate("/login")} className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium">
-                        Login
-                    </Button>
-                    <Button onClick={handleLogout} className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium">
-                        Logout
-                    </Button>
-                    <Button onClick={() => navigate("/signup")} className="px-4 py-2 rounded-lg border bg-transparent border-brand-4 text-brand-4 hover:bg-brand-4 hover:text-brand-1 transition font-medium">Sign up</Button>
+                    {!isAuthenticated ? (
+                        <>
+                            <Button
+                                onClick={() => navigate("/login")}
+                                className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
+                            >
+                                Login
+                            </Button>
+
+                            <Button
+                                onClick={() => navigate("/signup")}
+                                className="px-4 py-2 rounded-lg border bg-transparent border-brand-4 text-brand-4 hover:bg-brand-4 hover:text-brand-1 transition font-medium"
+                            >
+                                Sign up
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            onClick={handleLogout}
+                            className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
+                        >
+                            Logout
+                        </Button>
+                    )}
                 </div>
 
                 {/* Mobile menu button */}
