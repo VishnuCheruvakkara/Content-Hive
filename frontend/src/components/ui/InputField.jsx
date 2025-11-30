@@ -1,16 +1,19 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import { useField } from "formik"
 
 function InputField({
     label,
     type = "text",
     placeholder,
     leftIcon,
-    rightIcon,  
+    rightIcon,
     className = "",
     ...props
 }) {
+
+    const [field, meta] = useField(props);
     return (
         <div>
             {label && <label className="block mb-1 font-medium">{label}</label>}
@@ -40,9 +43,16 @@ function InputField({
                         rightIcon ? "pr-12" : "pr-4",
                         className
                     ))}
+                    {...field}
                     {...props}
                 />
             </div>
+
+            {/* Error message */}
+            {meta.touched && meta.error && (
+                <div className="text-red-950 text-sm mt-1 font-semibold">{meta.error}</div>
+            )}
+
         </div>
     );
 }

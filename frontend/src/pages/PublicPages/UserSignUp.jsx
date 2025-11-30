@@ -11,9 +11,60 @@ import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import publicAxios from "../../axios/PublicAxios";
+
+import toast from 'react-hot-toast';
+
+// ---------------- Validation Schema ----------------
+const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+        .min(3, "Username must be at least 3 characters")
+        .required("Username is required"),
+
+    email: Yup.string()
+        .email("Invalid email")
+        .required("Email is required"),
+
+    password: Yup.string()
+        .min(6, "Password must be at least 6 characters")
+        .required("Password is required"),
+
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Confirm password is required"),
+});
+
 function UserSignup() {
     const [showPass1, setShowPass1] = useState(false);
     const [showPass2, setShowPass2] = useState(false);
+
+    const initialValues = {
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    }
+
+    const handleSignupSubmit = async (values, { setSubmitting }) => {
+        try {
+            const res = await publicAxios.post("/users/sign-up/", {
+                username: values.username,
+                email: values.email,
+                password: values.password,
+            });
+
+            console.log("Signup Success:", res.data);
+            toast.success("Account created, Welcome...")
+
+        } catch (error) {
+            console.log("Signup Error:", error.response?.data);
+            toast.error("Signup failed.")
+        }
+
+        setSubmitting(false);
+    };
 
     return (
         <>
@@ -22,75 +73,84 @@ function UserSignup() {
             <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4 py-20">
                 <div className="w-full max-w-md bg-white/10 backdrop-blur-xl p-8 rounded-2xl border border-white/10 shadow-2xl">
 
-                    {/* Title */}
                     <h2 className="text-3xl font-bold text-center mb-2">Create an Account</h2>
                     <p className="text-center text-white/70 mb-8">Join ContentHive today</p>
 
-                    {/* Signup Form */}
-                    <form className="space-y-5">
+                    {/* ---------------- FORM START ---------------- */}
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={SignupSchema}
+                        onSubmit={handleSignupSubmit}
+                    >
+                        {({ isSubmitting }) => (
+                            <Form className="space-y-5">
+                                {/* Username */}
+                                <InputField
+                                    label="Username"
+                                    name="username"
+                                    placeholder="Choose a username"
+                                    leftIcon={<FaUser />}
+                                />
 
-                        {/* Username */}
-                        <InputField
-                            label="Username"
-                            placeholder="Choose a username"
-                            leftIcon={<FaUser />}
-                        />
+                                {/* Email */}
+                                <InputField
+                                    label="Email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    leftIcon={<MdEmail />}
+                                />
 
-                        {/* Email */}
-                        <InputField
-                            label="Email"
-                            type="email"
-                            placeholder="Enter your email"
-                            leftIcon={<MdEmail />}
-                        />
+                                {/* Password */}
+                                <InputField
+                                    label="Password"
+                                    name="password"
+                                    type={showPass1 ? "text" : "password"}
+                                    placeholder="Create password"
+                                    leftIcon={<RiLockPasswordFill />}
+                                    rightIcon={
+                                        showPass1 ? (
+                                            <FiEyeOff onClick={() => setShowPass1(false)} />
+                                        ) : (
+                                            <FiEye onClick={() => setShowPass1(true)} />
+                                        )
+                                    }
+                                />
 
-                        {/* Password */}
-                        <InputField
-                            label="Password"
-                            type={showPass1 ? "text" : "password"}
-                            placeholder="Create password"
-                            leftIcon={<RiLockPasswordFill />}
-                            rightIcon={
-                                showPass1 ? (
-                                    <FiEyeOff onClick={() => setShowPass1(false)} />
-                                ) : (
-                                    <FiEye onClick={() => setShowPass1(true)} />
-                                )
-                            }
-                        />
+                                {/* Confirm Password */}
+                                <InputField
+                                    label="Confirm Password"
+                                    name="confirmPassword"
+                                    type={showPass2 ? "text" : "password"}
+                                    placeholder="Re-enter password"
+                                    leftIcon={<RiLockPasswordFill />}
+                                    rightIcon={
+                                        showPass2 ? (
+                                            <FiEyeOff onClick={() => setShowPass2(false)} />
+                                        ) : (
+                                            <FiEye onClick={() => setShowPass2(true)} />
+                                        )
+                                    }
+                                />
 
-                        {/* Confirm Password */}
-                        <InputField
-                            label="Confirm Password"
-                            type={showPass2 ? "text" : "password"}
-                            placeholder="Re-enter password"
-                            leftIcon={<RiLockPasswordFill />}
-                            rightIcon={
-                                showPass2 ? (
-                                    <FiEyeOff onClick={() => setShowPass2(false)} />
-                                ) : (
-                                    <FiEye onClick={() => setShowPass2(true)} />
-                                )
-                            }
-                        />
+                                {/* Submit Button */}
+                                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                    {isSubmitting ? "Loading..." : "Sign Up"}
+                                </Button>
+                            </Form>
+                        )}
+                    </Formik>
 
-                        {/* Signup Button */}
-                        <Button type="submit" className="w-full">
-                            Sign Up
-                        </Button>
-                    </form>
+                    {/* ---------------- FORM END ---------------- */}
 
-                    {/* Divider */}
                     <div className="my-6 flex items-center gap-4">
                         <div className="flex-1 h-px bg-white/20"></div>
                         <span className="text-white/40 text-sm">OR</span>
                         <div className="flex-1 h-px bg-white/20"></div>
                     </div>
 
-                    {/* Google Button */}
                     <GoogleButton />
 
-                    {/* Login Link */}
                     <p className="text-center text-white/70 text-sm mt-6">
                         Already have an account?{" "}
                         <Link to="/login" className="text-brand-4 font-semibold hover:underline">
