@@ -16,10 +16,14 @@ import LoginSchema from "../../validations/LoginSchema";
 import toast from "react-hot-toast";
 import publicAxios from "../../axios/PublicAxios";
 
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/Slice/userAuthSlice";
+
 function UserLogin() {
 
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const initialValues = {
         email: "",
@@ -33,15 +37,20 @@ function UserLogin() {
                 password: values.password,
             });
 
-           
-            localStorage.setItem("access", response.data.data.access);
+            dispatch(loginSuccess({
+                access: response.data.data.access,
+                user: {
+                    id: response.data.data.id,
+                    username: response.data.data.username,
+                    email: response.data.data.email,
+                }
+            }));
             
-
             toast.success("Welcome back!");
 
             resetForm();
             navigate("/user");
-            
+
 
         } catch (error) {
             console.log("Login Error:", error.response?.data);

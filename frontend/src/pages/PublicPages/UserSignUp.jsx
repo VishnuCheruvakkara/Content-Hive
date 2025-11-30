@@ -18,12 +18,15 @@ import publicAxios from "../../axios/PublicAxios";
 import toast from 'react-hot-toast';
 import SignupSchema from "../../validations/SignupSchema";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/Slice/userAuthSlice";
 
 function UserSignup() {
     const [showPass1, setShowPass1] = useState(false);
     const [showPass2, setShowPass2] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const initialValues = {
         username: "",
         email: "",
@@ -31,7 +34,7 @@ function UserSignup() {
         confirmPassword: "",
     }
 
-    const handleSignupSubmit = async (values, { setSubmitting,resetForm }) => {
+    const handleSignupSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const res = await publicAxios.post("/users/sign-up/", {
                 username: values.username,
@@ -40,6 +43,16 @@ function UserSignup() {
             });
 
             console.log("Signup Success:", res.data);
+            dispatch(
+                loginSuccess({
+                    access: res.data.data.access, 
+                    user: {
+                        id: res.data.data.id,
+                        username: values.username,
+                        email: values.email,
+                    },
+                })
+            );
             toast.success("Account created, Welcome...")
             resetForm();
             navigate("/user");
@@ -62,7 +75,7 @@ function UserSignup() {
                     <h2 className="text-3xl font-bold text-center mb-2">Create an Account</h2>
                     <p className="text-center text-white/70 mb-8">Join ContentHive today</p>
 
-                    
+
                     <Formik
                         initialValues={initialValues}
                         validationSchema={SignupSchema}
@@ -127,7 +140,7 @@ function UserSignup() {
                         )}
                     </Formik>
 
-                    
+
                     <div className="my-6 flex items-center gap-4">
                         <div className="flex-1 h-px bg-white/20"></div>
                         <span className="text-white/40 text-sm">OR</span>

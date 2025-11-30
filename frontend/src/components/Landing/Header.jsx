@@ -4,13 +4,17 @@ import Button from '../ui/Button'
 import { useNavigate } from 'react-router-dom'
 import publicAxios from '../../axios/PublicAxios'
 import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { logoutSuccess } from '../../redux/Slice/userAuthSlice'
 
 function Header() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
     const handleLogout = async () => {
         try {
             await publicAxios.post("/users/logout/");
-            localStorage.removeItem("access");
+            dispatch(logoutSuccess());
             toast.success("Logged out successfully");
             navigate("/login");
             
