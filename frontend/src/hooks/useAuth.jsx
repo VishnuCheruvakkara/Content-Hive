@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 
 export default function useAuth() {
     const access = useSelector((state) => state.userAuth.access);
-    console.log("Check up ::::",access)
     return {
+        // Convert the data into boolean
         isAuthenticated: !!access,
     }
 }
