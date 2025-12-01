@@ -1,15 +1,15 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
-function PublicRouteProtection({ children }) {
+function PublicRouteProtection() {
   const { isAuthenticated } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/user" replace />;
+    return <Navigate to="/user/dashboard" replace />; 
   }
 
-  return children;
+  return <Outlet />; 
 }
 
 export default PublicRouteProtection;

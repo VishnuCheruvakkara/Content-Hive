@@ -3,33 +3,21 @@ import { Outlet } from "react-router-dom";
 import Header from "../components/Landing/Header";
 import Footer from "../components/Landing/Footer";
 import userAuthenticateAxios from "../axios/userAuthenticateAxios";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/Slice/userAuthSlice";
 
 export default function UserLayout() {
-  const dispatch = useDispatch();
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    async function fetchUserData() {
-      console.log("Triggering get-user-data....")
-      try {
-        const res = await userAuthenticateAxios.get("/users/get-user-data/");
-        // console.log("fulldata:::::",res.data.data)
-        // const { id, username, email } = res.data.data;
-        
-        // dispatch(
-        //   loginSuccess({
-        //     user: { id, username, email },
-        //   })
-        // );
-
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
-      }
-    }
-    fetchUserData();
-  }, []);
+  //   async function fetchUserData() {
+  //     try {
+  //       const res = await userAuthenticateAxios.get("/users/get-user-data/");
+    
+  //     } catch (err) {
+  //       console.error("Failed to fetch user data:", err);
+  //     }
+  //   }
+  //   fetchUserData();
+  // }, []);
 
   return (
     <div className="min-h-screen bg-brand-1 text-white flex flex-col">

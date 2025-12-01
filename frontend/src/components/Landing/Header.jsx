@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { logoutSuccess } from '../../redux/Slice/userAuthSlice'
 import useAuth from '../../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
 function Header() {
     const { isAuthenticated } = useAuth();
@@ -28,17 +29,18 @@ function Header() {
     return (
         <header className="w-full sticky top-0 z-50 bg-brand-1/95 backdrop-blur-md bg-linear-to-r from-brand-2/30 to-brand-3/20">
             <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                <a href="/" className="flex items-center gap-3">
+                <Link to="/" className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
                     <div className="text-white font-semibold tracking-wide">ContentHive</div>
-                </a>
-
-                <nav className="hidden md:flex items-center gap-6 text-sm text-white/90">
-                    <a href="#features" className="hover:text-brand-4 transition">Features</a>
-                    <a href="#modules" className="hover:text-brand-4 transition">Modules</a>
-                    <a href="#pricing" className="hover:text-brand-4 transition">Pricing</a>
-                    <a href="#contact" className="hover:text-brand-4 transition">Contact</a>
-                </nav>
+                </Link>
+                {!isAuthenticated && (
+                    <nav className="hidden md:flex items-center gap-6 text-sm text-white/90">
+                        <a href="#features" className="hover:text-brand-4 transition">Features</a>
+                        <a href="#modules" className="hover:text-brand-4 transition">Modules</a>
+                        <a href="#pricing" className="hover:text-brand-4 transition">Pricing</a>
+                        <a href="#contact" className="hover:text-brand-4 transition">Contact</a>
+                    </nav>
+                )}
 
                 <div className="hidden md:flex items-center gap-3">
                     {!isAuthenticated ? (
