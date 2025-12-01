@@ -22,7 +22,7 @@ def set_refresh_token_cookie(response, refresh_token):
     )
 
 
-def remove_refresh_token_cookie(request,response):
+def remove_refresh_token_cookie(request, response):
     cookie_name = settings.SIMPLE_JWT["AUTH_COOKIE"]
     refresh_token = request.COOKIES.get(cookie_name)
 

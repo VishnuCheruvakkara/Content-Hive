@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third party apps
-    'rest_framework_simplejwt.token_blacklist',
+    "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
     "corsheaders",
     # Custom apps
@@ -111,7 +111,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -130,10 +130,10 @@ CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 CORS_ALLOW_CREDENTIALS = True
 
 # COOKIE CONFIG (for refresh token)
-CSRF_COOKIE_SECURE = False
-
-CSRF_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_HTTPONLY = False 
+SESSION_COOKIE_SAMESITE = "None"
 
 
 # Password validation
@@ -177,20 +177,18 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-#Logger setup 
+# Logger setup
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
-    }, 
-
-    # root logger, Apply to all files in project 
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
+    },
+    # root logger, Apply to all files in project
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
     },
 }

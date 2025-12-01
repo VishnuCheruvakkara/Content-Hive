@@ -11,9 +11,14 @@ from .utils import (
     remove_refresh_token_cookie,
 )
 from django.contrib.auth import authenticate
+from django.conf import settings
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 User = get_user_model()
-
 
 class SignUp(APIView):
 
@@ -123,5 +128,80 @@ class Logout(APIView):
         response = Response(
             {"status": "success", "message": "Logged out"}, status=status.HTTP_200_OK
         )
-        remove_refresh_token_cookie(request,response)
+        remove_refresh_token_cookie(request, response)
         return response
+
+class CustomTokenRefresh(TokenRefreshView):
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE"])
+
+        if refresh_token is None:
+            return Response(
+                {"status": "error", "message": "Refresh token missing", "data": None},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        try:
+            # Call the  Inherited class ( Adding refresh token in request )
+
+            request.data["refresh"] = refresh_token
+            response = super().post(request, *args, **kwargs)
+
+            new_access = response.data.get("access")
+            new_refresh = response.data.get("refresh")
+
+            if not new_access:
+                raise InvalidToken("Token refresh failed")
+
+            token_obj = RefreshToken(new_refresh)
+            user_id=token_obj["user_id"]
+            user=User.objects.get(id=user_id)
+
+            res = Response(
+                {
+                    "status": "success",
+                    "message": "Token refreshed",
+                    "data": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "access": new_access,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+
+            set_refresh_token_cookie(res, new_refresh)
+            return res
+
+        except InvalidToken:
+            return Response(
+                {"status": "error", "message": "Invalid refresh token"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+class GetUserData(APIView):
+
+    def get(self, request):
+        user = request.user
+
+        return Response(
+            {
+                "status": "success",
+                "message": "User data fetched successfully",
+                "data": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
+    
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class GetCSRFToken(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request,*args,**kwargs):
+        return Response({"message": "CSRF cookie set"})
