@@ -45,11 +45,11 @@ function UserLogin() {
                     email: response.data.data.email,
                 }
             }));
-            
+
             toast.success("Welcome back!");
 
             resetForm();
-            navigate("/user");
+            navigate("/user/dashboard/");
 
 
         } catch (error) {

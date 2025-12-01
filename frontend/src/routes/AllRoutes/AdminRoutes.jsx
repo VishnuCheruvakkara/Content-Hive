@@ -1,10 +1,15 @@
 import React from 'react'
+import AdminLayout from '../../layout/AdminLayout'
+import AdminDashboard from '../../pages/AdminDashboardPages/AdminDashboard'
+import { Route,Routes } from 'react-router-dom'
 
 function AdminRoutes() {
   return (
-    <div>
-      
-    </div>
+    <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+      </Route>
+    </Routes>
   )
 }
 

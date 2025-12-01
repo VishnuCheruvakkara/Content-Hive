@@ -55,7 +55,7 @@ function UserSignup() {
             );
             toast.success("Account created, Welcome...")
             resetForm();
-            navigate("/user");
+            navigate("/user/dashboard/");
 
         } catch (error) {
             console.log("Signup Error:", error.response?.data);
