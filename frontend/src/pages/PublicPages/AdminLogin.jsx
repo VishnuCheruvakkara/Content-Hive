@@ -107,9 +107,9 @@ function AdminLogin() {
                                     leftIcon={<RiLockPasswordFill />}
                                     rightIcon={
                                         showPassword ? (
-                                            <FiEyeOff onClick={() => setShowPassword(false)} />
+                                            <FiEye onClick={() => setShowPassword(false)} />
                                         ) : (
-                                            <FiEye onClick={() => setShowPassword(true)} />
+                                            <FiEyeOff onClick={() => setShowPassword(true)} />
                                         )
                                     }
                                 />

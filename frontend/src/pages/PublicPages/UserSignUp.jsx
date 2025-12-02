@@ -116,9 +116,9 @@ function UserSignup() {
                                     leftIcon={<RiLockPasswordFill />}
                                     rightIcon={
                                         showPass1 ? (
-                                            <FiEyeOff onClick={() => setShowPass1(false)} />
+                                            <FiEye onClick={() => setShowPass1(false)} />
                                         ) : (
-                                            <FiEye onClick={() => setShowPass1(true)} />
+                                            <FiEyeOff onClick={() => setShowPass1(true)} />
                                         )
                                     }
                                 />
@@ -132,9 +132,9 @@ function UserSignup() {
                                     leftIcon={<RiLockPasswordFill />}
                                     rightIcon={
                                         showPass2 ? (
-                                            <FiEyeOff onClick={() => setShowPass2(false)} />
+                                            <FiEye onClick={() => setShowPass2(false)} />
                                         ) : (
-                                            <FiEye onClick={() => setShowPass2(true)} />
+                                            <FiEyeOff onClick={() => setShowPass2(true)} />
                                         )
                                     }
                                 />

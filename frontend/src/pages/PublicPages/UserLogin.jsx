@@ -102,8 +102,8 @@ function UserLogin() {
                                     leftIcon={<RiLockPasswordFill />}
                                     rightIcon={
                                         showPassword
-                                            ? <FiEyeOff onClick={() => setShowPassword(false)} />
-                                            : <FiEye onClick={() => setShowPassword(true)} />
+                                            ? <FiEye onClick={() => setShowPassword(false)} />
+                                            : <FiEyeOff onClick={() => setShowPassword(true)} />
                                     }
                                 />
 
