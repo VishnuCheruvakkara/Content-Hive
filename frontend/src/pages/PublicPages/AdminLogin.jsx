@@ -18,12 +18,14 @@ import publicAxios from "../../axios/PublicAxios";
 
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/Slice/userAuthSlice";
+import Spinner from "../../components/ui/Spinner";
 
 function AdminLogin() {
 
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const initialValues = {
         email: "",
@@ -31,6 +33,7 @@ function AdminLogin() {
     };
 
     const handleAdminLogin = async (values, { setSubmitting, resetForm }) => {
+        setLoading(true);
         try {
             const response = await publicAxios.post("/users/admin-login/", {
                 email: values.email,
@@ -57,6 +60,8 @@ function AdminLogin() {
         } catch (error) {
             console.log("Admin Login Error:", error.response?.data);
             toast.error("Invalid admin credentials.");
+        } finally {
+            setLoading(false);
         }
 
         setSubmitting(false);
@@ -64,6 +69,7 @@ function AdminLogin() {
 
     return (
         <>
+            {loading && <Spinner />}
             <Header />
 
             <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4">

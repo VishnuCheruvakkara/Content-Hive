@@ -20,12 +20,14 @@ import SignupSchema from "../../validations/SignupSchema";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/Slice/userAuthSlice";
+import Spinner from "../../components/ui/Spinner";
 
 function UserSignup() {
     const [showPass1, setShowPass1] = useState(false);
     const [showPass2, setShowPass2] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const initialValues = {
         username: "",
@@ -35,6 +37,7 @@ function UserSignup() {
     }
 
     const handleSignupSubmit = async (values, { setSubmitting, resetForm }) => {
+        setLoading(true);
         try {
             const res = await publicAxios.post("/users/sign-up/", {
                 username: values.username,
@@ -50,6 +53,7 @@ function UserSignup() {
                         id: res.data.data.id,
                         username: values.username,
                         email: values.email,
+                        is_admin: false,
                     },
                 })
             );
@@ -60,6 +64,8 @@ function UserSignup() {
         } catch (error) {
             console.log("Signup Error:", error.response?.data);
             toast.error("Signup failed. Please try again.")
+        } finally {
+            setLoading(false);
         }
 
         setSubmitting(false);
@@ -67,6 +73,7 @@ function UserSignup() {
 
     return (
         <>
+            {loading && <Spinner />}
             <Header />
 
             <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4 py-20">

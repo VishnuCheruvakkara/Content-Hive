@@ -3,7 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 function UserRouteProtection() {
-  const { isAuthenticated,isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
+  
+  
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

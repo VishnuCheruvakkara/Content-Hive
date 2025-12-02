@@ -18,12 +18,14 @@ import publicAxios from "../../axios/PublicAxios";
 
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/Slice/userAuthSlice";
+import Spinner from "../../components/ui/Spinner";
 
 function UserLogin() {
 
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const initialValues = {
         email: "",
@@ -31,6 +33,8 @@ function UserLogin() {
     };
 
     const handleLoginSubmit = async (values, { setSubmitting, resetForm }) => {
+        setLoading(true);
+
         try {
             const response = await publicAxios.post("/users/login/", {
                 email: values.email,
@@ -43,6 +47,7 @@ function UserLogin() {
                     id: response.data.data.id,
                     username: response.data.data.username,
                     email: response.data.data.email,
+                    is_admin: false,
                 }
             }));
 
@@ -55,6 +60,8 @@ function UserLogin() {
         } catch (error) {
             console.log("Login Error:", error.response?.data);
             toast.error("Invalid credentials.");
+        } finally {
+            setLoading(false);
         }
 
         setSubmitting(false);
@@ -62,6 +69,7 @@ function UserLogin() {
 
     return (
         <>
+            {loading && <Spinner />}
             <Header />
 
             <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4">

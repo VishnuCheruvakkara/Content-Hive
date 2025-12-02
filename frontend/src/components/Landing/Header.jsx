@@ -1,7 +1,7 @@
 import React from 'react'
 import MobileMenu from './MobileMenu'
 import Button from '../ui/Button'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate,useLocation } from 'react-router-dom'
 import publicAxios from '../../axios/PublicAxios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
@@ -13,6 +13,9 @@ function Header() {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    const showLandingNav = location.pathname === "/";
 
     const handleLogout = async () => {
         try {
@@ -33,7 +36,7 @@ function Header() {
                     <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
                     <div className="text-white font-semibold tracking-wide">ContentHive</div>
                 </Link>
-                {!isAuthenticated && (
+                {!isAuthenticated && showLandingNav &&(
                     <nav className="hidden md:flex items-center gap-6 text-sm text-white/90">
                         <a href="#features" className="hover:text-brand-4 transition">Features</a>
                         <a href="#modules" className="hover:text-brand-4 transition">Modules</a>
