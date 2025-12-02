@@ -197,6 +197,7 @@ class GetUserData(APIView):
                     "id": user.id,
                     "username": user.username,
                     "email": user.email,
+                    "is_admin": user.is_staff,
                 },
             },
             status=status.HTTP_200_OK,

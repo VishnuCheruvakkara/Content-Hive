@@ -4,6 +4,7 @@ import axios from "axios";
 import { getCookie } from "../utils/getCookie";
 import { loginSuccess, logoutSuccess, finishBootstrap } from "../redux/Slice/userAuthSlice";
 import Spinner from "../components/ui/Spinner";
+import userAuthenticateAxios from "../axios/userAuthenticateAxios";
 
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
@@ -12,8 +13,6 @@ export default function AuthInitializer({ children }) {
   useEffect(() => {
     async function init() {
       try {
-
-
         const bareAxios = axios.create({
           baseURL: import.meta.env.VITE_API_BASE_URL,
           withCredentials: true,
@@ -40,6 +39,13 @@ export default function AuthInitializer({ children }) {
 
       } catch (error) {
         console.log("Error happen :", error)
+        try {
+          await userAuthenticateAxios.get("/users/get-user-data/", {
+            skipAuthRefresh: false, // allow interceptor
+          });
+        } catch (err) {
+          // interceptor handles logout
+        }
       }
 
       dispatch(finishBootstrap());

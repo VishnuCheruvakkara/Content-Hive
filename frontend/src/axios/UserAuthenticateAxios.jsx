@@ -38,6 +38,8 @@ userAuthenticateAxios.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+
+
         if (originalRequest?.skipAuthRefresh) {
             return Promise.reject(error);
         }
@@ -50,7 +52,7 @@ userAuthenticateAxios.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-               
+
                 const refreshResponse = await userAuthenticateAxios.post(
                     "/users/token-refresh/",
                     {},
@@ -62,23 +64,23 @@ userAuthenticateAxios.interceptors.response.use(
                     id: refreshResponse.data.data.id,
                     username: refreshResponse.data.data.username,
                     email: refreshResponse.data.data.email,
-                    is_admin:refreshResponse.data.data.is_admin,
+                    is_admin: refreshResponse.data.data.is_admin,
                 };
 
                 // Update Redux store
                 store.dispatch(loginSuccess({ access: newAccess, user }));
                 isSessionExpiredHandled = false;
-                
+
                 // Retry original request with new token
                 originalRequest.headers["Authorization"] = `Bearer ${newAccess}`;
                 return userAuthenticateAxios(originalRequest);
             } catch (refreshError) {
                 console.error("Refresh token failed", refreshError);
                 if (!isSessionExpiredHandled) {
-                    isSessionExpiredHandled = true; 
-                    toast.error("Session expired. Please log in again.");
+                    isSessionExpiredHandled = true;
                     store.dispatch(logoutSuccess());
-                    navigateTo("/login"); 
+                    toast.error("Session expired. Please log in again.");
+                    navigateTo("/login");
                 }
                 return Promise.reject(refreshError);
             }
