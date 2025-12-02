@@ -4,6 +4,7 @@ const initialState = {
     access: null,
     user: null,
     isAuthenticated: false,
+    bootstrapped: false,
 };
 
 const userAuthSlice = createSlice({
@@ -21,8 +22,11 @@ const userAuthSlice = createSlice({
             state.user = null;
             state.isAuthenticated = false;
         },
+        finishBootstrap: (state) => {
+            state.bootstrapped = true;
+        }
     },
 });
 
-export const { loginSuccess, logoutSuccess } = userAuthSlice.actions;
+export const { loginSuccess, logoutSuccess,finishBootstrap } = userAuthSlice.actions;
 export default userAuthSlice.reducer;

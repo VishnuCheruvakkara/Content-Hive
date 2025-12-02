@@ -1,27 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { loginSuccess, logoutSuccess } from "../redux/Slice/userAuthSlice";
+import { getCookie } from "../utils/getCookie";
+import { loginSuccess, logoutSuccess, finishBootstrap } from "../redux/Slice/userAuthSlice";
+import Spinner from "../components/ui/Spinner";
 
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
-  const { access } = useSelector((state) => state.userAuth);
-  const [loading, setLoading] = useState(true);
+  const { access, bootstrapped } = useSelector((state) => state.userAuth);
 
   useEffect(() => {
-    async function bootstrap() {
+    async function init() {
       try {
         if (!access) {
-          
-          // Create axios WITHOUT INTERCEPTORS
+          // Create axios WITHOUT interceptors
           const bareAxios = axios.create({
             baseURL: import.meta.env.VITE_API_BASE_URL,
             withCredentials: true,
+            headers: {
+              "X-CSRFToken": getCookie("csrftoken") ?? "",
+            }
           });
 
-          // Call refresh API *directly* - safe, no recursion
+          // Direct refresh call
           const res = await bareAxios.post("/users/token-refresh/", {});
-
           const data = res.data.data;
 
           dispatch(
@@ -35,17 +37,16 @@ export default function AuthInitializer({ children }) {
             })
           );
         }
-      } catch (err) {
-        console.log("Refresh failed on bootstrap:", err);
-        dispatch(logoutSuccess());
+      } catch (error) {
+        console.log("Error happen :",error)
       }
 
-      setLoading(false);
+      dispatch(finishBootstrap());
     }
 
-    bootstrap();
+    init();
   }, []);
 
-  if (loading) return null;
+  if (!bootstrapped) return <Spinner/>;
   return children;
 }

@@ -66,7 +66,8 @@ userAuthenticateAxios.interceptors.response.use(
 
                 // Update Redux store
                 store.dispatch(loginSuccess({ access: newAccess, user }));
-
+                isSessionExpiredHandled = false;
+                
                 // Retry original request with new token
                 originalRequest.headers["Authorization"] = `Bearer ${newAccess}`;
                 return userAuthenticateAxios(originalRequest);

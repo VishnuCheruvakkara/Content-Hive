@@ -3,9 +3,9 @@ import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 function AdminRouteProtection() {
-  const { isAuthenticated, user } = useAuth();
-
-  if (!isAuthenticated || user?.role !== 'admin') {
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
     return <Navigate to="/admin-login" replace />;
   }
 
