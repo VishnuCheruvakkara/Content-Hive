@@ -9,6 +9,7 @@ import Spinner from './components/ui/Spinner';
 import useCSRF from './hooks/useCSRF';
 import NavigationRegistrar from './services/Navigation/NavigationRegistrar';
 import AuthInitializer from './auth/authInitializer';
+import CustomToaster from './components/ui/CustomToaster';
 
 function App() {
 
@@ -21,7 +22,7 @@ function App() {
         <PersistGate loading={<Spinner />} persistor={persistor}>
           <BrowserRouter>
             <NavigationRegistrar />
-            <Toaster position="top-right" reverseOrder={false} />
+            <CustomToaster />
             <AuthInitializer>
               <RouterConfig />
             </AuthInitializer>

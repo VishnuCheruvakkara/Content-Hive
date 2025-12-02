@@ -3,10 +3,12 @@ import { Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 function PublicRouteProtection() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   if (isAuthenticated) {
-    return <Navigate to="/user/dashboard" replace />; 
+    return isAdmin
+      ? <Navigate to="/admin/dashboard" replace />
+      : <Navigate to="/user/dashboard" replace />;
   }
 
   return <Outlet />; 
