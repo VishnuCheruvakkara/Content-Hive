@@ -79,7 +79,7 @@ userAuthenticateAxios.interceptors.response.use(
                 if (!isSessionExpiredHandled) {
                     isSessionExpiredHandled = true;
                     store.dispatch(logoutSuccess());
-                    toast.error("Session expired. Please log in again.");
+                    // toast.error("Session expired. Please log in again.");
                     navigateTo("/login");
                 }
                 return Promise.reject(refreshError);

@@ -183,26 +183,19 @@ class CustomTokenRefresh(TokenRefreshView):
                 {"status": "error", "message": "Invalid refresh token"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
-        
+# Check user is authenticated or not
 class GetUserData(APIView):
 
     def get(self, request):
-        user = request.user
 
         return Response(
             {
                 "status": "success",
-                "message": "User data fetched successfully",
-                "data": {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "is_admin": user.is_staff,
-                },
             },
             status=status.HTTP_200_OK,
         )
     
+# Generate csrf before app start
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
