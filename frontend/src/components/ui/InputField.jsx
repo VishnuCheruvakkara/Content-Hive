@@ -34,6 +34,8 @@ function InputField({
                 )}
 
                 <input
+                    {...props}
+                    {...field}
                     type={type}
                     placeholder={placeholder}
                     className={twMerge(clsx(
@@ -43,8 +45,7 @@ function InputField({
                         rightIcon ? "pr-12" : "pr-4",
                         className
                     ))}
-                    {...field}
-                    {...props}
+
                 />
             </div>
 
