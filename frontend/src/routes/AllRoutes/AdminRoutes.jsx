@@ -6,7 +6,7 @@ import { Route,Routes } from 'react-router-dom'
 function AdminRoutes() {
   return (
     <Routes>
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/dashboard" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
       </Route>
     </Routes>

@@ -12,33 +12,34 @@ export default function AuthInitializer({ children }) {
   useEffect(() => {
     async function init() {
       try {
-        if (!access) {
-          // Create axios WITHOUT interceptors
-          const bareAxios = axios.create({
-            baseURL: import.meta.env.VITE_API_BASE_URL,
-            withCredentials: true,
-            headers: {
-              "X-CSRFToken": getCookie("csrftoken") ?? "",
-            }
-          });
 
-          // Direct refresh call
-          const res = await bareAxios.post("/users/token-refresh/", {});
-          const data = res.data.data;
 
-          dispatch(
-            loginSuccess({
-              access: data.access,
-              user: {
-                id: data.id,
-                username: data.username,
-                email: data.email,
-              },
-            })
-          );
-        }
+        const bareAxios = axios.create({
+          baseURL: import.meta.env.VITE_API_BASE_URL,
+          withCredentials: true,
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken") ?? "",
+          }
+        });
+
+        // Direct refresh call
+        const res = await bareAxios.post("/users/token-refresh/", {});
+        const data = res.data.data;
+
+        dispatch(
+          loginSuccess({
+            access: data.access,
+            user: {
+              id: data.id,
+              username: data.username,
+              email: data.email,
+              is_admin: data.is_admin,
+            },
+          })
+        );
+
       } catch (error) {
-        console.log("Error happen :",error)
+        console.log("Error happen :", error)
       }
 
       dispatch(finishBootstrap());
@@ -47,6 +48,6 @@ export default function AuthInitializer({ children }) {
     init();
   }, []);
 
-  if (!bootstrapped) return <Spinner/>;
+  if (!bootstrapped) return <Spinner />;
   return children;
 }

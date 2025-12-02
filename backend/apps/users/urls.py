@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SignUp, SignIn, Logout, CustomTokenRefresh,GetUserData,GetCSRFToken
+from .views import SignUp, SignIn, Logout, CustomTokenRefresh,GetUserData,GetCSRFToken,AdminSignIn
 
 urlpatterns = [
     path("sign-up/", SignUp.as_view(), name="sign-up"),
@@ -12,5 +12,6 @@ urlpatterns = [
 
     path("csrf/", GetCSRFToken.as_view(), name="get-csrf"),
 
+    path("admin-login/",AdminSignIn.as_view(),name="admin-login"),
 
 ]

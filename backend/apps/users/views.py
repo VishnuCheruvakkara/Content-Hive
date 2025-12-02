@@ -46,6 +46,7 @@ class SignUp(APIView):
                             "username": user.username,
                             "email": user.email,
                             "access": tokens["access"],
+                            "is_admin":user.is_staff,
                         },
                     },
                     status=status.HTTP_201_CREATED,
@@ -103,6 +104,7 @@ class SignIn(APIView):
                         "username": user.username,
                         "email": user.email,
                         "access": tokens["access"],
+                        "is_admin": user.is_staff,
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -167,6 +169,7 @@ class CustomTokenRefresh(TokenRefreshView):
                         "username": user.username,
                         "email": user.email,
                         "access": new_access,
+                        "is_admin":user.is_staff,
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -205,3 +208,48 @@ class GetCSRFToken(APIView):
 
     def get(self, request,*args,**kwargs):
         return Response({"message": "CSRF cookie set"})
+
+
+class AdminSignIn(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.validated_data["email"]
+            password = serializer.validated_data["password"]
+
+            user = authenticate(request, email=email, password=password)
+
+            if user is None or not user.is_staff:
+                return Response(
+                    {"status": "error", "message": "Invalid admin credentials"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            tokens = generate_tokens_for_user(user)
+
+            response = Response(
+                {
+                    "status": "success",
+                    "message": "Admin login successful",
+                    "data": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "access": tokens["access"],
+                        "is_admin":True,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+
+            set_refresh_token_cookie(response, tokens["refresh"])
+            return response
+
+        return Response(
+            {"status": "error", "message": "Validation failed"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )

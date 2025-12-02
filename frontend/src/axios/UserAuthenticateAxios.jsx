@@ -62,6 +62,7 @@ userAuthenticateAxios.interceptors.response.use(
                     id: refreshResponse.data.data.id,
                     username: refreshResponse.data.data.username,
                     email: refreshResponse.data.data.email,
+                    is_admin:refreshResponse.data.data.is_admin,
                 };
 
                 // Update Redux store

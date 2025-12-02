@@ -1,65 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Landing/Header";
 import Footer from "../../components/Landing/Footer";
 
+import InputField from "../../components/ui/InputField";
+import Button from "../../components/ui/Button";
+
+import { Link, useNavigate } from "react-router-dom";
+import { MdEmail } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
+import { Formik, Form } from "formik";
+import LoginSchema from "../../validations/LoginSchema";
+
+import toast from "react-hot-toast";
+import publicAxios from "../../axios/PublicAxios";
+
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/Slice/userAuthSlice";
+
 function AdminLogin() {
+
+    const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const initialValues = {
+        email: "",
+        password: "",
+    };
+
+    const handleAdminLogin = async (values, { setSubmitting, resetForm }) => {
+        try {
+            const response = await publicAxios.post("/users/admin-login/", {
+                email: values.email,
+                password: values.password,
+            });
+
+            dispatch(
+                loginSuccess({
+                    access: response.data.data.access,
+                    user: {
+                        id: response.data.data.id,
+                        username: response.data.data.username,
+                        email: response.data.data.email,
+                        is_admin: response.data.data.is_admin,
+                    },
+                })
+            );
+
+            toast.success("Admin Login Successful!");
+
+            resetForm();
+            navigate("/admin/dashboard/");
+
+        } catch (error) {
+            console.log("Admin Login Error:", error.response?.data);
+            toast.error("Invalid admin credentials.");
+        }
+
+        setSubmitting(false);
+    };
+
     return (
         <>
-            <Header/>
+            <Header />
+
             <div className="min-h-screen flex items-center justify-center bg-brand-1 text-white px-4">
                 <div className="w-full max-w-md bg-white/10 backdrop-blur-xl p-8 rounded-2xl border border-white/10 shadow-2xl">
 
                     {/* Title */}
                     <h2 className="text-3xl font-extrabold text-center mb-2">Admin Panel</h2>
-                    <p className="text-center text-white/70 mb-8">Secure Admin Login — ContentHive</p>
+                    <p className="text-center text-white/70 mb-8">
+                        Secure Admin Login — ContentHive
+                    </p>
 
-                    {/* Login Form */}
-                    <form className="space-y-5">
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={LoginSchema}
+                        onSubmit={handleAdminLogin}
+                    >
+                        {({ isSubmitting }) => (
+                            <Form className="space-y-5">
 
-                        {/* Email */}
-                        <div>
-                            <label className="block mb-1 font-medium">Admin Email</label>
-                            <input
-                                type="email"
-                                placeholder="admin@example.com"
-                                className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-4"
-                            />
-                        </div>
+                                {/* Email */}
+                                <InputField
+                                    label="Admin Email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="Enter the email address"
+                                    leftIcon={<MdEmail />}
+                                />
 
-                        {/* Password */}
-                        <div>
-                            <label className="block mb-1 font-medium">Password</label>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                className="w-full px-4 py-3 rounded-xl bg-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-4"
-                            />
-                        </div>
+                                {/* Password */}
+                                <InputField
+                                    label="Password"
+                                    name="password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    leftIcon={<RiLockPasswordFill />}
+                                    rightIcon={
+                                        showPassword ? (
+                                            <FiEyeOff onClick={() => setShowPassword(false)} />
+                                        ) : (
+                                            <FiEye onClick={() => setShowPassword(true)} />
+                                        )
+                                    }
+                                />
 
-                        {/* Login Button */}
-                        <button
-                            type="submit"
-                            className="w-full px-4 py-3 rounded-xl bg-brand-4 text-brand-1 font-semibold shadow-lg hover:scale-[.98] transition"
-                        >
-                            Login as Admin
-                        </button>
-                    </form>
+                                {/* Submit Button */}
+                                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                                    {isSubmitting ? "Loading..." : "Login as Admin"}
+                                </Button>
+                            </Form>
+                        )}
+                    </Formik>
 
                     {/* Info */}
                     <p className="text-center text-white/60 text-sm mt-6">
-                        This section is limited to authorized administrators only.
+                        This area is restricted to authorized administrators only.
                     </p>
 
-                    {/* Return to User Login */}
+                    {/* Back to User Login */}
                     <p className="text-center text-white/70 text-sm mt-4">
                         Not an admin?{" "}
-                        <a href="/login" className="text-brand-4 font-semibold hover:underline">
+                        <Link to="/login" className="text-brand-4 font-semibold hover:underline">
                             Go to User Login
-                        </a>
+                        </Link>
                     </p>
+
                 </div>
             </div>
-            <Footer/>
+
+            <Footer />
         </>
     );
 }
