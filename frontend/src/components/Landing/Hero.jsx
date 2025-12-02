@@ -30,7 +30,7 @@ function Hero() {
 
                 {/* Right - visual card */}
                 <div className="flex justify-center md:justify-end">
-                    <div className="w-full max-w-md rounded-2xl p-6 bg-gradient-to-br from-brand-2 to-brand-3 shadow-2xl">
+                    <div className="w-full max-w-md rounded-2xl p-6 bg-linear-to-br from-brand-2 to-brand-3 shadow-2xl">
                         <div className="bg-white/8 rounded-xl p-4">
                             <div className="h-44 rounded-lg bg-white/6 flex items-center justify-center text-white/80">App preview (placeholder)</div>
 

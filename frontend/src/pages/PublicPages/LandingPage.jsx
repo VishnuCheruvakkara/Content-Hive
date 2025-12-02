@@ -1,10 +1,10 @@
 import React from 'react'
-import Header from '../components/Landing/Header'
-import Hero from '../components/Landing/Hero'
-import Features from '../components/Landing/Features'
-import Modules from '../components/Landing/Modules'
-import CTA from '../components/Landing/CTA'
-import Footer from '../components/Landing/Footer'
+import Header from '../../components/Landing/Header'
+import Hero from '../../components/Landing/Hero'
+import Features from '../../components/Landing/Features'
+import Modules from '../../components/Landing/Modules'
+import CTA from '../../components/Landing/CTA'
+import Footer from '../../components/Landing/Footer'
 
 function LandingPage() {
     return (
