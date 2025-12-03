@@ -16,6 +16,7 @@
   --color-brand-4: var(--color-brand-4);
 }
 
+/* Custom input fill behavior */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -23,4 +24,27 @@ input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 1000px #746f8a inset !important;
     -webkit-text-fill-color: #ffffff !important; /* your text color */
     transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Customize side bar  */
+
+::-webkit-scrollbar {
+  width: 8px; 
+}
+
+::-webkit-scrollbar-track {
+  background: #3D365C !important;
+  border-left: 2px solid #451a4b;
+  border-right: 2px solid #451a4b;
+  border-top: none;
+  border-bottom: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f5bcd9a1 !important;
+  border-radius: 0 !important; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff82c3 !important; /* slightly darker hover */
 }
