@@ -1,7 +1,6 @@
 // components/Admin/Sidebar.jsx
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { FaBars, FaTimes } from "react-icons/fa";
 import PropTypes from 'prop-types';
 
 const Sidebar = ({
@@ -9,66 +8,55 @@ const Sidebar = ({
     title = "Admin Panel",
     subtitle = "Manage your content",
     userInfo = null,
-    showMobileToggle = true,
-    defaultOpen = true
+    defaultOpen = true,
+    // SIMPLIFIED: Just one prop for sidebar state
+    sidebarOpen = null,
+    onToggleClick = null
 }) => {
-    const [sidebarOpen, setSidebarOpen] = useState(defaultOpen);
-    const [mobileOpen, setMobileOpen] = useState(false);
 
-    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-    const toggleMobileSidebar = () => setMobileOpen(!mobileOpen);
+    // If parent provides sidebarOpen, use it. Otherwise, use defaultOpen
+    const isOpen = sidebarOpen !== null ? sidebarOpen : defaultOpen;
+
+    // On mobile, we want to close sidebar when clicking a link
+    const handleLinkClick = () => {
+        if (onToggleClick) onToggleClick();
+    };
+
+    // On mobile, we also want to close when clicking overlay
+    const handleOverlayClick = () => {
+        if (onToggleClick) {
+            onToggleClick();
+        }
+    };
 
     return (
         <>
-            {/* Mobile Menu Button */}
-            {showMobileToggle && (
-                <button
-                    className="lg:hidden fixed top-[18px] left-4 z-50 p-2 rounded-md border border-brand-1 shadow-md shadow-black/60 bg-brand-2 "
-                    onClick={toggleMobileSidebar}
-                >
-                    {mobileOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-                </button>
-            )}
-
-            {/* Sidebar Overlay for mobile */}
-            {mobileOpen && (
+            {/* Sidebar Overlay — ALWAYS visible when open */}
+            {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/10 backdrop-blur-sm z-40 lg:hidden"
-                    onClick={() => setMobileOpen(false)}
+                    className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:bg-transparent lg:backdrop-blur-none"
+                    onClick={handleOverlayClick}
                 />
             )}
-
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 top-[70px] z-40 ${sidebarOpen ? "w-64" : "w-20"
-                    } bg-brand-2 transform transition-all duration-300 ease-in-out ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                className={`fixed lg:static inset-y-0 left-0 lg:top-0 top-[70px] z-40 ${isOpen ? "w-64" : "w-20"
+                    } bg-linear-to-r from-brand-2/40 to-brand-2/80 transform transition-all duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                     }`}
             >
                 <div className="h-full overflow-y-auto py-8 px-4 flex flex-col">
                     {/* Sidebar Header */}
                     <div className="flex items-center justify-between mb-10">
-                        <div className={`${!sidebarOpen && "flex justify-center w-full"}`}>
-                            {sidebarOpen ? (
+                        <div className={`${!isOpen && "flex justify-center w-full"}`}>
+                            {isOpen && (
                                 <>
                                     <h2 className="text-2xl font-bold">{title}</h2>
                                     {subtitle && (
                                         <p className="text-gray-300 text-sm mt-2">{subtitle}</p>
                                     )}
                                 </>
-                            ) : (
-                                <></>
                             )}
                         </div>
-
-                        {/* Desktop Toggle Button */}
-                        <button
-                            className="hidden lg:block p-2 hover:bg-brand-1 rounded-lg transition-colors"
-                            onClick={toggleSidebar}
-                            title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
-                        >
-                            {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-                        </button>
-
                     </div>
 
                     {/* Navigation Menu */}
@@ -78,17 +66,17 @@ const Sidebar = ({
                                 key={item.path}
                                 to={item.path}
                                 className={({ isActive }) =>
-                                    `flex items-center ${sidebarOpen ? "space-x-3 px-4" : "justify-center px-2"
+                                    `flex items-center ${isOpen ? "space-x-3 px-4" : "justify-center px-2"
                                     } py-3 rounded-lg transition-colors ${isActive
                                         ? "bg-brand-1 text-white"
                                         : "hover:bg-brand-1 hover:bg-opacity-50"
                                     }`
                                 }
-                                title={!sidebarOpen ? item.name : ""}
-                                onClick={() => setMobileOpen(false)}
+                                title={!isOpen ? item.name : ""}
+                                onClick={handleLinkClick}
                             >
                                 <span className="text-lg">{item.icon}</span>
-                                {sidebarOpen && (
+                                {isOpen && (
                                     <span className="font-medium">{item.name}</span>
                                 )}
                             </NavLink>
@@ -98,8 +86,8 @@ const Sidebar = ({
                     {/* User Info Section */}
                     {userInfo && (
                         <div className="mt-10 pt-6 border-t border-gray-700">
-                            <div className={`px-4 ${!sidebarOpen && "text-center"}`}>
-                                {sidebarOpen ? (
+                            <div className={`px-4 ${!isOpen && "text-center"}`}>
+                                {isOpen ? (
                                     <>
                                         <p className="text-sm text-gray-400">{userInfo.label || "Logged in as:"}</p>
                                         <p className="font-semibold">{userInfo.name}</p>
@@ -141,8 +129,9 @@ Sidebar.propTypes = {
         email: PropTypes.string,
         label: PropTypes.string,
     }),
-    showMobileToggle: PropTypes.bool,
     defaultOpen: PropTypes.bool,
+    sidebarOpen: PropTypes.bool, // SIMPLIFIED: Just one prop
+    onToggleClick: PropTypes.func,
 };
 
 export default Sidebar;
