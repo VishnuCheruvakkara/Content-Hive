@@ -20,7 +20,7 @@ export default function UserLayout() {
 
   // User Menu Items
   const menuItems = [
-    { path: "/user", name: "Home", icon: <FaHome /> },
+    { path: "/user/dashboard", name: "Home", icon: <FaHome /> },
     { path: "/user/favorites", name: "Favorites", icon: <FaHeart /> },
     { path: "/user/cart", name: "Cart", icon: <FaShoppingCart /> },
     { path: "/user/profile", name: "Profile", icon: <FaUser /> },
