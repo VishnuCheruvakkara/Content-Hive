@@ -97,16 +97,16 @@ export default function TipTapEditor({ onSubmit }) {
 
   const handleImageUpload = async (file) => {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('file', file);
 
     try {
-      const response = await UserAuthenticatedAxios.post('/api/upload-image', formData, {
+      const response = await UserAuthenticatedAxios.post('/blog/upload-image/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      const imageUrl = response.data.url; 
+      const imageUrl = response?.data?.data; 
 
       // Insert image at cursor position
       editor.chain().focus().setImage({ src: imageUrl }).run();

@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 import environ
 from datetime import timedelta
+import cloudinary
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -51,9 +53,12 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "rest_framework",
     "corsheaders",
+    "cloudinary",
+    "cloudinary_storage",
     # Custom apps
     "users",
     "blog",
+
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -192,3 +197,11 @@ LOGGING = {
         "level": "DEBUG",
     },
 }
+
+
+# Cloudinary configurations 
+cloudinary.config(
+    cloud_name=env("CLOUDINARY_CLOUD_NAME"),
+    api_key=env("CLOUDINARY_API_KEY"),
+    api_secret=env("CLOUDINARY_API_SECRET"),
+)
