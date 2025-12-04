@@ -1,4 +1,7 @@
 import React from "react";
+import Button from "../../components/ui/Button";
+import { MdAdd } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 // Dummy data for demo. Replace with API data later
 const posts = [
@@ -29,10 +32,23 @@ const posts = [
 ];
 
 export default function UserPosts() {
+  const navigate = useNavigate();
+
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8">Your Blog Posts</h1>
 
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Your Blog Posts</h1>
+
+        <Button
+          icon={MdAdd}
+          className="bg-brand-3 text-white px-4 py-3"
+          onClick={() => navigate("create-article")}
+        >
+          Create Article
+        </Button>
+      </div>
+   
       {posts.length === 0 ? (
         <p className="text-white/70">No posts yet. Start writing your first blog!</p>
       ) : (

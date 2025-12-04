@@ -8,5 +8,6 @@ export default function useAuth() {
         isAuthenticated: !!access,
         isAdmin:user?.is_admin === true,
         bootstrapped,
+        user,
     }
 }

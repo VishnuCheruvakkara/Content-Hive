@@ -1,15 +1,16 @@
 import React from 'react'
 import MobileMenu from './MobileMenu'
 import Button from '../ui/Button'
-import { useNavigate,useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import publicAxios from '../../axios/PublicAxios'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { logoutSuccess } from '../../redux/Slice/userAuthSlice'
 import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
+import { FaBars, FaTimes } from 'react-icons/fa'
 
-function Header() {
+function Header({ sidebarOpen, onToggleSidebar }) {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -32,11 +33,30 @@ function Header() {
     return (
         <header className="w-full sticky top-0 z-50 bg-brand-1/95 backdrop-blur-md bg-linear-to-r from-brand-2/30 to-brand-3/20">
             <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
-                    <div className="text-white font-semibold tracking-wide">ContentHive</div>
-                </Link>
-                {!isAuthenticated && showLandingNav &&(
+
+
+                <div className="flex items-center gap-4">
+                    {/* Sidebar Toggle Button */}
+                    {isAuthenticated &&
+                        (
+                            <button
+                                onClick={onToggleSidebar}
+                                className="p-2 cursor-pointer rounded-md border border-brand-1 shadow-md shadow-black/60 bg-brand-2 hover:bg-brand-1 transition-colors"
+                                title={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+                            >
+
+                                {sidebarOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+                            </button>
+                        )
+                    }
+
+                    <Link to="/" className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
+                        <div className="text-white font-semibold tracking-wide">ContentHive</div>
+                    </Link>
+                </div>
+
+                {!isAuthenticated && showLandingNav && (
                     <nav className="hidden md:flex items-center gap-6 text-sm text-white/90">
                         <a href="#features" className="hover:text-brand-4 transition">Features</a>
                         <a href="#modules" className="hover:text-brand-4 transition">Modules</a>
