@@ -6,6 +6,9 @@ import Button from "../../components/ui/Button";
 import TipTapMenu from "./TipTapComponents/MenuButton";
 import Placeholder from "@tiptap/extension-placeholder";
 import Highlight from "@tiptap/extension-highlight";
+import Image from "@tiptap/extension-image";
+import { FaImage } from "react-icons/fa";
+import UserAuthenticatedAxios from "../../axios/UserAuthenticateAxios"
 
 import {
   FaBold,
@@ -38,14 +41,17 @@ export default function TipTapEditor({ onSubmit }) {
         showOnlyWhenEditable: true,
         showOnlyCurrent: false,
       }),
+      Image.configure({
+        inline: true,
+        allowBase64: false,
+        HTMLAttributes: {
+          class: 'rounded-lg max-w-full h-auto',
+        },
+      }),
     ],
     content: "<p></p>",
-    editorProps: {
-      attributes: {
-        class: 'focus:outline-none',
-      },
-    },
-  },[]);
+
+  }, []);
 
   if (!editor) return null;
 
@@ -76,6 +82,9 @@ export default function TipTapEditor({ onSubmit }) {
       { icon: <FaCode />, title: "Code Block", action: (ed) => ed.chain().focus().toggleCodeBlock().run(), active: (ed) => ed.isActive("codeBlock") },
     ],
     [
+      { icon: <FaImage />, title: "Insert Image", action: () => triggerImageUpload() },
+    ],
+    [
       { icon: <GoHorizontalRule />, title: "Horizontal Rule", action: (ed) => ed.chain().focus().setHorizontalRule().run() },
       { icon: <FaEraser />, title: "Clear", action: (ed) => ed.chain().focus().clearContent().run() },
     ],
@@ -84,6 +93,46 @@ export default function TipTapEditor({ onSubmit }) {
       { icon: <FaRedo />, title: "Redo", action: (ed) => ed.chain().focus().redo().run(), },
     ],
   ];
+
+
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await UserAuthenticatedAxios.post('/api/upload-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const imageUrl = response.data.url; 
+
+      // Insert image at cursor position
+      editor.chain().focus().setImage({ src: imageUrl }).run();
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      alert('Failed to upload image');
+    }
+  };
+
+  const triggerImageUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Show loading state
+        editor.chain().focus().setImage({ src: 'https://via.placeholder.com/400x300?text=Uploading...' }).run();
+
+        await handleImageUpload(file);
+      }
+    };
+
+    input.click();
+  };
 
   return (
     <div className=" border-white/30 p-3 bg-brand-2/50 text-white ">
