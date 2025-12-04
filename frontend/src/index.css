@@ -253,27 +253,5 @@ input:-webkit-autofill:active {
 .tiptap mark {
   background-color: #fef3c7; /* Light yellow highlight */
   color: #92400e; /* Dark text for contrast */
-  border-radius: 0.25rem;
   padding: 0.1rem 0.2rem;
-}
-
-/* Alternative highlight colors if using multicolor */
-.tiptap mark.pink {
-  background-color: #fce7f3;
-  color: #9d174d;
-}
-
-.tiptap mark.blue {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.tiptap mark.green {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.tiptap mark.red {
-  background-color: #fee2e2;
-  color: #991b1b;
 }

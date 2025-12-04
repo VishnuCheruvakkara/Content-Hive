@@ -31,7 +31,7 @@ export default function TipTapEditor({ onSubmit }) {
       StarterKit,
       Underline,
       Highlight.configure({
-        multicolor: true, // Allows multiple highlight colors if you want
+        multicolor: true,
       }),
       Placeholder.configure({
         placeholder: "Start writing your blog...",
@@ -40,7 +40,12 @@ export default function TipTapEditor({ onSubmit }) {
       }),
     ],
     content: "<p></p>",
-  });
+    editorProps: {
+      attributes: {
+        class: 'focus:outline-none',
+      },
+    },
+  },[]);
 
   if (!editor) return null;
 
@@ -49,7 +54,6 @@ export default function TipTapEditor({ onSubmit }) {
     onSubmit(json);
   };
 
-  // Define buttons in groups
   const buttons = [
     [
       { icon: <FaParagraph />, title: "Paragraph", action: (ed) => ed.chain().focus().setParagraph().run(), active: (ed) => ed.isActive("paragraph") },
@@ -63,18 +67,7 @@ export default function TipTapEditor({ onSubmit }) {
       { icon: <FaStrikethrough />, title: "Strike", action: (ed) => ed.chain().focus().toggleStrike().run(), active: (ed) => ed.isActive("strike") },
 
       { icon: <FaHighlighter />, title: "Highlight", action: (ed) => ed.chain().focus().toggleHighlight().run(), active: (ed) => ed.isActive("highlight") },
-      {
-        icon: <FaHighlighter style={{ color: '#fbbf24' }} />,
-        title: "Yellow Highlight",
-        action: (ed) => ed.chain().focus().toggleHighlight({ color: '#fef3c7' }).run(),
-        active: (ed) => ed.isActive("highlight", { color: '#fef3c7' })
-      },
-      {
-        icon: <FaHighlighter style={{ color: '#93c5fd' }} />,
-        title: "Blue Highlight",
-        action: (ed) => ed.chain().focus().toggleHighlight({ color: '#dbeafe' }).run(),
-        active: (ed) => ed.isActive("highlight", { color: '#dbeafe' })
-      },
+
     ],
     [
       { icon: <FaListUl />, title: "Bullet List", action: (ed) => ed.chain().focus().toggleBulletList().run(), active: (ed) => ed.isActive("bulletList") },
@@ -84,31 +77,28 @@ export default function TipTapEditor({ onSubmit }) {
     ],
     [
       { icon: <GoHorizontalRule />, title: "Horizontal Rule", action: (ed) => ed.chain().focus().setHorizontalRule().run() },
-      { icon: <FaEraser />, title: "Clear", action: (ed) => ed.chain().focus().clearNodes().run() },
+      { icon: <FaEraser />, title: "Clear", action: (ed) => ed.chain().focus().clearContent().run() },
     ],
     [
-      { icon: <FaUndo />, title: "Undo", action: (ed) => ed.chain().focus().undo().run(), disabled: (ed) => !ed.can().undo() },
-      { icon: <FaRedo />, title: "Redo", action: (ed) => ed.chain().focus().redo().run(), disabled: (ed) => !ed.can().redo() },
+      { icon: <FaUndo />, title: "Undo", action: (ed) => ed.chain().focus().undo().run(), },
+      { icon: <FaRedo />, title: "Redo", action: (ed) => ed.chain().focus().redo().run(), },
     ],
   ];
 
   return (
-    <div className="border border-white/30 p-3 bg-black text-white rounded-lg">
-      {/* Toolbar */}
+    <div className=" border-white/30 p-3 bg-brand-2/50 text-white ">
       <TipTapMenu editor={editor} buttons={buttons} />
 
-      {/* Editor Area */}
-      <div className="min-h-[400px] mb-4 p-4 bg-gray-900/30 rounded-lg border border-white/10 focus-within:border-white/30 transition-colors">
+      <div className="min-h-[400px] mb-4 p-4 bg-gray-900/30 border border-white/10 focus-within:border-white/30 transition-colors">
         <EditorContent
           editor={editor}
           className=" ProseMirror max-w-none min-h-[350px] focus:outline-none"
         />
       </div>
 
-      {/* Submit */}
       <div className="flex justify-end">
-        <Button className="px-6 py-2" onClick={handleSubmit}>
-          Submit
+        <Button className="px-6 py-2 bg-brand-3 text-white rounded-sm" onClick={handleSubmit}>
+          Publish
         </Button>
       </div>
     </div>

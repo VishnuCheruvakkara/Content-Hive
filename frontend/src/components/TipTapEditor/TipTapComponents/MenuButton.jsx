@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 
 export default function TipTapMenu({ editor, buttons }) {
+  const [, setUpdate] = useState(0);
+
+  // Listen to editor updates to trigger re-renders
+  React.useEffect(() => {
+    if (!editor) return;
+
+    const updateHandler = () => {
+      setUpdate(prev => prev + 1);
+    };
+
+    editor.on("update", updateHandler);
+    editor.on("selectionUpdate", updateHandler);
+
+    return () => {
+      editor.off("update", updateHandler);
+      editor.off("selectionUpdate", updateHandler);
+    };
+  }, [editor]);
+
   if (!editor) return null;
 
   const MenuButton = ({ onClick, active, icon, title, disabled }) => (
@@ -9,7 +28,7 @@ export default function TipTapMenu({ editor, buttons }) {
       onClick={onClick}
       disabled={disabled}
       className={`p-2 rounded-lg hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center ${
-        active ? "bg-white/20 text-brand-3" : "text-gray-300"
+        active ? "bg-brand-3 text-white" : "text-gray-300"
       } ${
         disabled ? "opacity-40 cursor-not-allowed hover:bg-transparent" : "hover:text-white"
       }`}
@@ -23,7 +42,7 @@ export default function TipTapMenu({ editor, buttons }) {
   );
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-4 p-3 bg-gray-900/80 rounded-xl border border-gray-700 shadow-lg">
+    <div className="flex flex-wrap items-center gap-2 mb-4 p-3 bg-gray-900/80  border border-gray-700 shadow-lg">
       {buttons.map((group, idx) => (
         <div 
           key={idx} 
