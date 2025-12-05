@@ -250,11 +250,10 @@ input:-webkit-autofill:active {
 /* Link styling */
 .tiptap a {
   color: #ffb4db;
-  text-decoration: underline;
-  text-underline-offset: 2px;
   cursor:pointer;
   font-size: small;
   font-weight: 600;
+
 }
 
 .tiptap a:hover {
