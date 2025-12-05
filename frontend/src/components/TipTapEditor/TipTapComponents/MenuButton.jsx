@@ -27,7 +27,7 @@ export default function TipTapMenu({ editor, buttons }) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`p-2 rounded-lg hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center ${
+      className={`p-2 cursor-pointer rounded-lg hover:bg-white/10 transition-all duration-200 active:scale-95 flex items-center justify-center ${
         active ? "bg-brand-3 text-white" : "text-gray-300"
       } ${
         disabled ? "opacity-40 cursor-not-allowed hover:bg-transparent" : "hover:text-white"

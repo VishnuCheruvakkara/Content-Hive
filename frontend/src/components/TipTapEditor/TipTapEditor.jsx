@@ -7,50 +7,34 @@ import TipTapMenu from "./TipTapComponents/MenuButton";
 import Placeholder from "@tiptap/extension-placeholder";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
-import { FaImage } from "react-icons/fa";
 import UserAuthenticatedAxios from "../../axios/UserAuthenticateAxios"
-
-import {
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaStrikethrough,
-  FaCode,
-  FaParagraph,
-  FaHeading,
-  FaListOl,
-  FaListUl,
-  FaQuoteRight,
-  FaUndo,
-  FaRedo,
-  FaHighlighter,
-  FaEraser,
-} from "react-icons/fa";
-import { GoHorizontalRule } from "react-icons/go";
+import toast from "react-hot-toast";
+import TextAlign from '@tiptap/extension-text-align';
+import { getTipTapButtons } from "./TipTapComponents/Icons";
 
 export default function TipTapEditor({ onSubmit }) {
   const editor = useEditor({
     extensions: [
       StarterKit,
       Underline,
-      Highlight.configure({
-        multicolor: true,
-      }),
+      Highlight.configure({ multicolor: true }),
       Placeholder.configure({
         placeholder: "Start writing your blog...",
         showOnlyWhenEditable: true,
         showOnlyCurrent: false,
       }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right', 'justify'],
+        defaultAlignment: 'left',
+      }),
       Image.configure({
         inline: true,
         allowBase64: false,
-        HTMLAttributes: {
-          class: 'rounded-lg max-w-full h-auto',
-        },
+        HTMLAttributes: { class: 'rounded-lg max-w-full h-auto mx-auto block' },
       }),
     ],
     content: "<p></p>",
-
   }, []);
 
   if (!editor) return null;
@@ -60,59 +44,49 @@ export default function TipTapEditor({ onSubmit }) {
     onSubmit(json);
   };
 
-  const buttons = [
-    [
-      { icon: <FaParagraph />, title: "Paragraph", action: (ed) => ed.chain().focus().setParagraph().run(), active: (ed) => ed.isActive("paragraph") },
-      { icon: <FaHeading />, title: "Heading 1", action: (ed) => ed.chain().focus().toggleHeading({ level: 1 }).run(), active: (ed) => ed.isActive("heading", { level: 1 }) },
-      { icon: <FaHeading className="text-sm" />, title: "Heading 2", action: (ed) => ed.chain().focus().toggleHeading({ level: 2 }).run(), active: (ed) => ed.isActive("heading", { level: 2 }) },
-    ],
-    [
-      { icon: <FaBold />, title: "Bold", action: (ed) => ed.chain().focus().toggleBold().run(), active: (ed) => ed.isActive("bold") },
-      { icon: <FaItalic />, title: "Italic", action: (ed) => ed.chain().focus().toggleItalic().run(), active: (ed) => ed.isActive("italic") },
-      { icon: <FaUnderline />, title: "Underline", action: (ed) => ed.chain().focus().toggleUnderline().run(), active: (ed) => ed.isActive("underline") },
-      { icon: <FaStrikethrough />, title: "Strike", action: (ed) => ed.chain().focus().toggleStrike().run(), active: (ed) => ed.isActive("strike") },
-
-      { icon: <FaHighlighter />, title: "Highlight", action: (ed) => ed.chain().focus().toggleHighlight().run(), active: (ed) => ed.isActive("highlight") },
-
-    ],
-    [
-      { icon: <FaListUl />, title: "Bullet List", action: (ed) => ed.chain().focus().toggleBulletList().run(), active: (ed) => ed.isActive("bulletList") },
-      { icon: <FaListOl />, title: "Ordered List", action: (ed) => ed.chain().focus().toggleOrderedList().run(), active: (ed) => ed.isActive("orderedList") },
-      { icon: <FaQuoteRight />, title: "Blockquote", action: (ed) => ed.chain().focus().toggleBlockquote().run(), active: (ed) => ed.isActive("blockquote") },
-      { icon: <FaCode />, title: "Code Block", action: (ed) => ed.chain().focus().toggleCodeBlock().run(), active: (ed) => ed.isActive("codeBlock") },
-    ],
-    [
-      { icon: <FaImage />, title: "Insert Image", action: () => triggerImageUpload() },
-    ],
-    [
-      { icon: <GoHorizontalRule />, title: "Horizontal Rule", action: (ed) => ed.chain().focus().setHorizontalRule().run() },
-      { icon: <FaEraser />, title: "Clear", action: (ed) => ed.chain().focus().clearContent().run() },
-    ],
-    [
-      { icon: <FaUndo />, title: "Undo", action: (ed) => ed.chain().focus().undo().run(), },
-      { icon: <FaRedo />, title: "Redo", action: (ed) => ed.chain().focus().redo().run(), },
-    ],
-  ];
-
-
   const handleImageUpload = async (file) => {
+    const toastId = toast.loading("Uploading image...");
     const formData = new FormData();
     formData.append('file', file);
 
     try {
       const response = await UserAuthenticatedAxios.post('/blog/upload-image/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const imageUrl = response?.data?.data; 
-
-      // Insert image at cursor position
+      const imageUrl = response?.data?.data;
+      toast.success("Image added", { id: toastId });
       editor.chain().focus().setImage({ src: imageUrl }).run();
     } catch (error) {
       console.error('Image upload failed:', error);
-      alert('Failed to upload image');
+      toast.error("Failed to upload image", { id: toastId });
+    }
+  };
+
+  const handleFileUpload = async (file) => {
+    const toastId = toast.loading("Uploading file...");
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await UserAuthenticatedAxios.post('/blog/upload-file/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const fileUrl = response?.data?.data;
+      const fileName = fileUrl.split('/').pop();
+      toast.success("File attached", { id: toastId });
+
+      editor.chain().focus().insertContent(`
+        <p class="file-box">
+          <a href="${fileUrl}" target="_blank">${fileName}</a>
+        </p>
+      `).run();
+
+
+    } catch (error) {
+      console.error('File upload failed:', error);
+      toast.error("Failed to upload file", { id: toastId });
     }
   };
 
@@ -124,9 +98,6 @@ export default function TipTapEditor({ onSubmit }) {
     input.onchange = async (e) => {
       const file = e.target.files[0];
       if (file) {
-        // Show loading state
-        editor.chain().focus().setImage({ src: 'https://via.placeholder.com/400x300?text=Uploading...' }).run();
-
         await handleImageUpload(file);
       }
     };
@@ -134,14 +105,32 @@ export default function TipTapEditor({ onSubmit }) {
     input.click();
   };
 
+  // Updated to match backend allowed types
+  const triggerFileUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf,.doc,.docx'; // only allowed by backend
+
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        await handleFileUpload(file);
+      }
+    };
+
+    input.click();
+  };
+
+  const buttons = getTipTapButtons(triggerImageUpload, triggerFileUpload);
+
   return (
-    <div className=" border-white/30 p-3 bg-brand-2/50 text-white ">
+    <div className="border-white/30 p-3 bg-brand-2/50 text-white">
       <TipTapMenu editor={editor} buttons={buttons} />
 
-      <div className="min-h-[400px] mb-4 p-4 bg-gray-900/30 border border-white/10 focus-within:border-white/30 transition-colors">
+      <div className="h-[400px] mb-3 overflow-y-auto p-4 bg-gray-900/30 border border-white/10">
         <EditorContent
           editor={editor}
-          className=" ProseMirror max-w-none min-h-[350px] focus:outline-none"
+          className="ProseMirror max-w-none min-h-[350px] focus:outline-none"
         />
       </div>
 
