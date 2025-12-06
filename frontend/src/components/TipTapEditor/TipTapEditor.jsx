@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -7,12 +7,18 @@ import TipTapMenu from "./TipTapComponents/MenuButton";
 import Placeholder from "@tiptap/extension-placeholder";
 import Highlight from "@tiptap/extension-highlight";
 import Image from "@tiptap/extension-image";
-import UserAuthenticatedAxios from "../../axios/UserAuthenticateAxios"
 import toast from "react-hot-toast";
 import TextAlign from '@tiptap/extension-text-align';
 import { getTipTapButtons } from "./TipTapComponents/Icons";
+import { triggerImageUpload } from "./TipTapComponents/ImageUpload";
+import { triggerFileUpload } from "./TipTapComponents/FileUpload";
+import { validateBlogForm } from "../../validations/ValidateBlogFormSubmission";
 
 export default function TipTapEditor({ onSubmit }) {
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -34,111 +40,77 @@ export default function TipTapEditor({ onSubmit }) {
         HTMLAttributes: { class: 'rounded-lg max-w-full h-auto mx-auto block' },
       }),
     ],
-    content: "<p></p>",
+    content: "",
   }, []);
 
   if (!editor) return null;
 
   const handleSubmit = () => {
-    const json = editor.getJSON();
-    onSubmit(json);
+   
+    const contentHtml = editor.getHTML();
+
+    const isValid = validateBlogForm({ title, description, contentHtml });
+    if (!isValid) return;
+
+    onSubmit({
+      title: title,
+      description: description,
+      content_html: contentHtml,
+    });
   };
 
-  const handleImageUpload = async (file) => {
-    const toastId = toast.loading("Uploading image...");
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await UserAuthenticatedAxios.post('/blog/upload-image/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      const imageUrl = response?.data?.data;
-      toast.success("Image added", { id: toastId });
-      editor.chain().focus().setImage({ src: imageUrl }).run();
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      toast.error("Failed to upload image", { id: toastId });
-    }
-  };
-
-  const handleFileUpload = async (file) => {
-    const toastId = toast.loading("Uploading file...");
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await UserAuthenticatedAxios.post('/blog/upload-file/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      const fileUrl = response?.data?.data;
-      const fileName = fileUrl.split('/').pop();
-      toast.success("File attached", { id: toastId });
-
-      editor.chain().focus().insertContent(`
-        <p class="file-box">
-          <a href="${fileUrl}" target="_blank">${fileName}</a>
-        </p>
-      `).run();
-
-
-    } catch (error) {
-      console.error('File upload failed:', error);
-      toast.error("Failed to upload file", { id: toastId });
-    }
-  };
-
-  const triggerImageUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        await handleImageUpload(file);
-      }
-    };
-
-    input.click();
-  };
-
-  // Updated to match backend allowed types
-  const triggerFileUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.pdf,.doc,.docx'; // only allowed by backend
-
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        await handleFileUpload(file);
-      }
-    };
-
-    input.click();
-  };
-
-  const buttons = getTipTapButtons(triggerImageUpload, triggerFileUpload);
+  const buttons = getTipTapButtons(() => triggerImageUpload(editor), () => triggerFileUpload(editor));
 
   return (
-    <div className="border-white/30 p-3 bg-brand-2/50 text-white">
-      <TipTapMenu editor={editor} buttons={buttons} />
 
-      <div className="h-[400px] mb-3 overflow-y-auto p-4 bg-gray-900/30 border border-white/10">
-        <EditorContent
-          editor={editor}
-          className="ProseMirror max-w-none min-h-[350px] focus:outline-none"
+    <>
+      <div className="mb-3">
+        <label htmlFor="blog-title" className="block mb-2 text-white font-medium ">
+          Blog Title
+        </label>
+        <input
+          id="blog-title"
+          type="text"
+          placeholder="Enter blog title..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full p-2 bg-gray-900/50 border border-white/20 text-white rounded-sm outline-none focus:outline-none focus:ring-2 focus:ring-brand-3"
         />
       </div>
 
-      <div className="flex justify-end">
-        <Button className="px-6 py-2 bg-brand-3 text-white rounded-sm" onClick={handleSubmit}>
-          Publish
-        </Button>
+      <div className="mb-3">
+        <label htmlFor="blog-description" className="block mb-2 text-white font-medium"> 
+          Short Description
+        </label>
+        <textarea
+          id="blog-description"
+          placeholder="Short description..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full p-2 bg-gray-900/50 border border-white/20 text-white rounded-sm outline-none h-20 focus:outline-none focus:ring-2 focus:ring-brand-3"
+        />
       </div>
-    </div>
+
+      <div className="border-white/30 p-3 bg-brand-2/50 text-white">
+        <TipTapMenu editor={editor} buttons={buttons} />
+
+        <div className="h-[400px] mb-3 overflow-y-auto p-4 bg-gray-900/30 border border-white/10">
+          <EditorContent
+            editor={editor}
+            className="ProseMirror max-w-none min-h-[350px] focus:outline-none"
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <Button
+            className="px-6 py-2 bg-brand-3 text-white rounded-sm"
+            onClick={handleSubmit}
+          >
+            Publish
+          </Button>
+        </div>
+      </div>
+    </>
+
   );
 }
