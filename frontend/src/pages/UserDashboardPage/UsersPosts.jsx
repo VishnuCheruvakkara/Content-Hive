@@ -11,6 +11,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import FormattedDate from "../../components/ui/FormattedData";
+import Breadcrumb from "../../components/ui/BreadCrumb";
 
 export default function UserPosts() {
   const navigate = useNavigate();
@@ -48,12 +49,17 @@ export default function UserPosts() {
     fetchUserBlogs(1);
   }, [debouncedSearch]);
 
+  const breadcrumbItems = [
+    { label: "Home", link: "/" },
+    { label: "My Blog Posts" },
+  ];
 
   return (
     <div className="p-4">
+      <Breadcrumb items={breadcrumbItems} />
 
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-white">Your Blog Posts</h1>
+        <h1 className="text-2xl font-bold text-white">My Blog Posts</h1>
         <Button
           icon={MdAdd}
           className="bg-brand-3 text-white px-4 py-3"

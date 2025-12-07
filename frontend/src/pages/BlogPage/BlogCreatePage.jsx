@@ -4,6 +4,7 @@ import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
 import toast from "react-hot-toast";
 import Spinner from "../../components/ui/Spinner"
 import { useNavigate } from "react-router-dom"
+import Breadcrumb from "../../components/ui/BreadCrumb";
 
 function BlogCreatePage() {
   const [loading, setLoading] = useState(false);
@@ -28,13 +29,22 @@ function BlogCreatePage() {
     }
   };
 
+  const breadcrumbItems = [
+    { label: "Home", link: "/" },
+    { label: "My Blog Posts", link: "/user/dashboard" },
+    { label: "Create Blog" },
+  ];
+
   return (
     <>
-      {loading && <Spinner/>}
+      {loading && <Spinner />}
+
+
       <div className="p-4">
+        <Breadcrumb items={breadcrumbItems} />
         <TipTapEditor onSubmit={handleSubmit} />
       </div>
-    </>  
+    </>
   );
 }
 
