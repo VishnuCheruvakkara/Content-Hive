@@ -16,15 +16,11 @@ def validate_description(value):
         raise serializers.ValidationError("Description can only contain letters, numbers, spaces, and underscore (_).")
     return value
 
-import re
-import bleach
-from rest_framework import serializers
-
 def validate_content(value):
     if not value or len(value.strip()) == 0:
         raise serializers.ValidationError("Content cannot be empty.")
 
-    # 1. Remove full <script>...</script> blocks
+    # Remove full <script>...</script> blocks
     value = re.sub(
         r'<script.*?>.*?</script>',
         '',
@@ -32,10 +28,10 @@ def validate_content(value):
         flags=re.DOTALL | re.IGNORECASE
     )
 
-    # 2. Remove any remaining <script ...> tags
+    # Remove any remaining <script ...> tags
     value = re.sub(r'<script.*?>', '', value, flags=re.IGNORECASE)
 
-    # 3. Clean with Bleach — keep ALL other HTML (tags + attributes)
+    # Clean with Bleach — keep ALL other HTML (tags + attributes)
     cleaned = bleach.clean(
         value,
         tags=[],            # allow no "safe tags" (but since strip=False, they STAY)
