@@ -6,6 +6,7 @@ import { loginSuccess, logoutSuccess, finishBootstrap } from "../redux/Slice/use
 import Spinner from "../components/ui/Spinner";
 import userAuthenticateAxios from "../axios/userAuthenticateAxios";
 
+
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
   const { access, bootstrapped } = useSelector((state) => state.userAuth);

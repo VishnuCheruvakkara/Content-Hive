@@ -8,7 +8,7 @@ from cloudinary.exceptions import Error as CloudinaryError
 from blog.models import Blog
 from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
-
+from django.shortcuts import get_object_or_404
 
 class ImageUpload(APIView):
     def post(self, request):
@@ -124,3 +124,51 @@ class GetUsersBlogs(APIView):
                 "message": "Something went wrong while fetching user blogs.",
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetSingleBlog(APIView):
+    """
+    Fetch full details of a single blog by ID.
+    """
+
+    def get(self, request, blog_id):
+        try:
+            blog = get_object_or_404(Blog, id=blog_id)
+
+            # If blog is not published, only owner can view
+            if not blog.is_published and blog.created_by != request.user:
+                return Response(
+                    {
+                        "success": False,
+                        "message": "You do not have permission to view this blog."
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            serializer = BlogSerializer(blog)
+            return Response(
+                {
+                    "success": True,
+                    "data": serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+
+        except DatabaseError:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Database error while fetching the blog."
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong.",
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
