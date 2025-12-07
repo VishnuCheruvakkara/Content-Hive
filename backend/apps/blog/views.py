@@ -3,8 +3,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .utils import upload_to_cloudinary,upload_to_supabase
-from .serializers import DocumentUploadSerializer,ImageUploadSerializer
+from .serializers import DocumentUploadSerializer,ImageUploadSerializer,BlogSerializer
 from cloudinary.exceptions import Error as CloudinaryError
+from blog.models import Blog
+from django.db import DatabaseError
+from rest_framework.pagination import PageNumberPagination
+
 
 class ImageUpload(APIView):
     def post(self, request):
@@ -56,8 +60,67 @@ class DocumentUpload(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class CreateBlog(APIView):
-    pass 
 
+    def post(self, request):
+        try:
+            serializer = BlogSerializer(data=request.data)
 
+            if serializer.is_valid():
+                serializer.save(created_by=request.user)
+                return Response(
+                    {
+                        "message": "Blog created successfully",
+                        "data": serializer.data
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+
+            return Response(
+                {
+                    "status": "error",
+                    "message": "Validation failed",
+                    "errors": serializer.errors
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "error": "Something went wrong while creating the blog.",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class GetUsersBlogs(APIView):
+
+    def get(self, request):
+        try:
+            user = request.user
+            search = request.query_params.get("q", "")
+            blogs = Blog.objects.filter(created_by=user).order_by("-created_at")
+
+            if search:
+                blogs = blogs.filter(title__icontains=search)
+
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
+            result_page = paginator.paginate_queryset(blogs, request)
+            serializer = BlogSerializer(result_page, many=True)
+
+            return paginator.get_paginated_response(serializer.data)
+
+        except DatabaseError:
+            return Response({
+                "success": False,
+                "message": "Database error occurred while fetching blogs."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Something went wrong while fetching user blogs.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

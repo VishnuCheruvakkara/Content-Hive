@@ -1,10 +1,10 @@
 import React from "react";
-import { PiSpinnerGap } from "react-icons/pi";
+import { ImSpinner3 } from "react-icons/im";
 
 const Spinner = () => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-brand-1/90 backdrop-blur-sm z-9999">
-      <PiSpinnerGap className="animate-spin text-brand-4" size={70} />
+      <ImSpinner3 className="animate-spin text-brand-4" size={70} />
     </div>
   );
 };

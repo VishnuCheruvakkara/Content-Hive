@@ -1,5 +1,11 @@
 from rest_framework import serializers
 import os
+from rest_framework import serializers
+from blog.models import Blog
+from django.contrib.auth import get_user_model 
+from .validators import validate_title, validate_description, validate_content
+
+User=get_user_model()
 
 class ImageUploadSerializer(serializers.Serializer):
     file = serializers.ImageField()
@@ -64,3 +70,32 @@ class DocumentUploadSerializer(serializers.Serializer):
         file.name = file.name.replace(" ", "_")
 
         return file
+    
+class UserMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
+        read_only_fields = fields
+
+
+class BlogSerializer(serializers.ModelSerializer):
+    created_by = UserMiniSerializer(read_only=True)
+
+    # Add validation by referencing validators
+    title = serializers.CharField(validators=[validate_title])
+    description = serializers.CharField(validators=[validate_description])
+    content_html = serializers.CharField(validators=[validate_content])
+
+    class Meta:
+        model = Blog
+        fields = [
+            'id',
+            'title',
+            'description',
+            'content_html',
+            'created_at',
+            'updated_at',
+            'is_published',
+            'created_by',
+        ]
+        read_only_fields = ["id", "created_by", "created_at", "updated_at"]
