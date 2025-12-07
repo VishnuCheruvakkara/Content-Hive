@@ -13,7 +13,7 @@ import { triggerImageUpload } from "./TipTapComponents/ImageUpload";
 import { triggerFileUpload } from "./TipTapComponents/FileUpload";
 import { validateBlogForm } from "../../validations/ValidateBlogFormSubmission";
 
-export default function TipTapEditor({ onSubmit, defaultTitle = "", defaultDescription = "",defaultContent = "", }) {
+export default function TipTapEditor({ onSubmit, defaultTitle = "", defaultDescription = "",defaultContent = "", isEdit=false}) {
 
   const [title, setTitle] = useState(defaultTitle);
   const [description, setDescription] = useState(defaultDescription);
@@ -104,7 +104,7 @@ export default function TipTapEditor({ onSubmit, defaultTitle = "", defaultDescr
             className="px-6 py-2 bg-brand-3 text-white rounded-sm"
             onClick={handleSubmit}
           >
-            Publish
+            {isEdit ? "Update" : "Publish"}
           </Button>
         </div>
       </div>

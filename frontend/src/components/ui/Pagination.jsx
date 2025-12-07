@@ -12,7 +12,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         onClick={() => onPageChange(i)}
         className={`w-10 h-10 mx-1 rounded-lg border shadow-md shadow-black/50 border-gray-800 flex items-center justify-center 
           ${page === i ? "bg-brand-3 text-white" : "text-white bg-gray-800"}
-          hover:bg-brand-3 transition`}
+          hover:bg-brand-3 transition cursor-pointer`}
       >
         {i}
       </button>
@@ -27,7 +27,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         onClick={() => page > 1 && onPageChange(page - 1)}
         disabled={page === 1}
         className={`w-10 h-10 rounded-lg border shadow-md shadow-black/50 border-gray-800 flex items-center justify-center
-          ${page === 1 ? "opacity-40 cursor-not-allowed" : "hover:bg-brand-3"}
+          ${page === 1 ? "opacity-40 cursor-not-allowed" : "hover:bg-brand-3 cursor-pointer"}
           bg-gray-800 text-white transition`}
       >
         <MdChevronLeft size={20} />
@@ -41,8 +41,8 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         onClick={() => page < totalPages && onPageChange(page + 1)}
         disabled={page === totalPages}
         className={`w-10 h-10 rounded-lg border shadow-md shadow-black/50 border-gray-800 flex items-center justify-center
-          ${page === totalPages ? "opacity-40 cursor-not-allowed" : "hover:bg-brand-3"}
-          bg-gray-800 text-white transition`}
+          ${page === totalPages ? "opacity-40 cursor-not-allowed" : "hover:bg-brand-3 cursor-pointer"}
+          bg-gray-800 text-white transition `}
       >
         <MdChevronRight size={20} />
       </button>

@@ -87,7 +87,7 @@ export default function UserPosts() {
           <div
             key={blog?.id}
             className="mb-6 p-4 bg-gray-900/50 rounded hover:bg-gray-900/70 transition shadow-md shadow-black/30"
-            onClick={() => navigate(`blogs/${blog.id}`)}
+            onClick={() => navigate(`blog-details/${blog.id}`)}
           >
             <div className="cursor-pointer">
               <h3 className="text-xl font-bold text-white">{blog?.title}</h3>

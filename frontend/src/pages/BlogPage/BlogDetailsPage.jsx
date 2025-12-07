@@ -80,7 +80,7 @@ export default function BlogDetailsPage() {
                 <Button
                     icon={FiArrowLeft}
                     className="px-4 py-2 rounded-sm"
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/users/dashboard")}
                 >
                     Back to Blogs
                 </Button>

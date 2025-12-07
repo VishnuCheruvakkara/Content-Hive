@@ -35,13 +35,13 @@ export default function BlogEditPage() {
         try {
             setLoading(true);
 
-            const response = await userAuthenticateAxios.put(
+            const response = await userAuthenticateAxios.patch(
                 `/blog/update-blog/${id}/`,
                 updatedData
             );
 
             toast.success("Blog updated successfully");
-            navigate(`/blog/details/${id}`);
+            navigate(`../blog-details/${id}`);
         } catch (error) {
             toast.error("Failed to update blog");
             console.error(error);
@@ -67,6 +67,7 @@ export default function BlogEditPage() {
                 defaultTitle={blog?.title}
                 defaultDescription={blog?.description}
                 defaultContent={blog?.content_html}
+                isEdit={true}
             />
         </div>
     );

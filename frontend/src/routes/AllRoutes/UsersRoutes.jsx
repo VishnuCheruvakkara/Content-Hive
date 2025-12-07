@@ -12,7 +12,7 @@ function UsersRoutes() {
       <Route path="/dashboard" element={<UserLayout />} >
         <Route index element={<UserPosts />} />
         <Route path="create-article" element={<BlogCreatePage />} />
-        <Route path="blogs/:id" element={<BlogDetailsPage />} />
+        <Route path="blog-details/:id" element={<BlogDetailsPage />} />
         <Route path="edit-blog/:id" element={<BlogEditPage />} />
 
       </Route>

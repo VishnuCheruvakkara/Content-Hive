@@ -172,3 +172,45 @@ class GetSingleBlog(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class UpdateBlog(APIView):
+
+    def patch(self, request, id):
+        try:
+            try:
+                blog = Blog.objects.get(id=id, created_by=request.user)
+            except Blog.DoesNotExist:
+                return Response(
+                    {"error": "Blog not found or unauthorized"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            serializer = BlogSerializer(blog, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "message": "Blog updated successfully",
+                        "data": serializer.data
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            return Response(
+                {
+                    "status": "error",
+                    "message": "Validation failed",
+                    "errors": serializer.errors
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "error": "Something went wrong while updating the blog.",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
