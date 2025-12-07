@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
 import Button from "../../components/ui/Button";
 import TipTapMenu from "./TipTapComponents/MenuButton";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -14,15 +13,14 @@ import { triggerImageUpload } from "./TipTapComponents/ImageUpload";
 import { triggerFileUpload } from "./TipTapComponents/FileUpload";
 import { validateBlogForm } from "../../validations/ValidateBlogFormSubmission";
 
-export default function TipTapEditor({ onSubmit }) {
+export default function TipTapEditor({ onSubmit, defaultTitle = "", defaultDescription = "",defaultContent = "", }) {
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(defaultTitle);
+  const [description, setDescription] = useState(defaultDescription);
 
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Underline,
       Highlight.configure({ multicolor: true }),
       Placeholder.configure({
         placeholder: "Start writing your blog...",
@@ -40,7 +38,7 @@ export default function TipTapEditor({ onSubmit }) {
         HTMLAttributes: { class: 'rounded-lg max-w-full h-auto mx-auto block' },
       }),
     ],
-    content: "",
+    content: defaultContent || "",
   }, []);
 
   if (!editor) return null;

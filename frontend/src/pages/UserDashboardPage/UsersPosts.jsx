@@ -3,7 +3,6 @@ import Button from "../../components/ui/Button";
 import { MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import InlineSpinner from "../../components/ui/InlineSpinner";
-import toast from "react-hot-toast";
 import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
 import Pagination from "../../components/ui/Pagination";
 import SearchBar from "../../components/ui/SearchBar";  // <-- ADD THIS
@@ -39,7 +38,6 @@ export default function UserPosts() {
       setTotalPages(Math.ceil(count / 5));
     } catch (error) {
       console.error(error);
-      toast.error("Failed to fetch blogs");
     } finally {
       setLoading(false);
     }
