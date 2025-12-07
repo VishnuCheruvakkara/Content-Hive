@@ -4,8 +4,8 @@ import useAuth from '../../hooks/useAuth';
 
 function UserRouteProtection() {
   const { isAuthenticated, isAdmin, bootstrapped } = useAuth();
-  if (!bootstrapped) return <Spinner />;
-  
+
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
