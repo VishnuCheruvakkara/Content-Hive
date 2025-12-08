@@ -36,6 +36,8 @@ export default function BlogListPage({
                 params: { page: pageNumber, q: debouncedSearch },
             });
 
+            console.log("Blog Lists :",response?.data?.results )
+
             setBlogs(response?.data?.results || []);
             setPage(pageNumber);
 
