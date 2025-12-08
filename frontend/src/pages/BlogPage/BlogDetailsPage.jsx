@@ -89,6 +89,32 @@ export default function BlogDetailsPage() {
         <div className="p-6 relative">
             <Breadcrumb items={breadcrumbItems} />
 
+            {/* User Details */}
+            <div className="flex items-center mb-6 mt-4">
+                {/* User Initial */}
+                <div className="w-12 h-12 bg-brand-3 text-white flex items-center justify-center rounded-lg text-xl font-bold">
+                    {blog?.created_by?.username?.charAt(0)?.toUpperCase()}
+                </div>
+
+                {/* User Info */}
+                <div className="ml-3">
+                    <p className="text-white font-semibold text-lg">
+                        {blog?.created_by?.username}
+                        {user?.id === blog?.created_by?.id && (
+                            <span className="text-brand-3 font-bold ml-1">(You)</span>
+                        )}
+                    </p>
+
+                    <p className="text-gray-400 text-sm">
+                        Published on <FormattedDate dateString={blog?.created_at} />
+                    </p>
+                </div>
+            </div>
+
+            {/* Divider */}
+            <hr className="border-gray-500 mb-6" />
+
+
             {/* Top Right Edit Button */}
             {blog?.created_by?.id == user?.id && (
                 <div className="absolute right-6 top-6 flex space-x-4">
@@ -108,12 +134,6 @@ export default function BlogDetailsPage() {
                     </Button>
                 </div>
             )}
-
-
-            {/* Published Date */}
-            <div className="text-sm text-gray-400 mb-6">
-                Published: <FormattedDate dateString={blog?.created_at} />
-            </div>
 
             <div className="mb-6 bg-white/10 rounded-md p-3 overflow-x-hidden">
                 <TipTapViewer content={blog?.content_html} />
