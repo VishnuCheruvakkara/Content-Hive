@@ -100,7 +100,7 @@ class GetUsersBlogs(APIView):
         try:
             user = request.user
             search = request.query_params.get("q", "")
-            blogs = Blog.objects.filter(created_by=user).order_by("-created_at")
+            blogs = Blog.objects.filter(created_by=user,is_deleted=False).order_by("-created_at")
 
             if search:
                 blogs = blogs.filter(title__icontains=search)
@@ -133,7 +133,7 @@ class GetSingleBlog(APIView):
 
     def get(self, request, blog_id):
         try:
-            blog = get_object_or_404(Blog, id=blog_id)
+            blog = get_object_or_404(Blog, id=blog_id, is_deleted=False )
 
             # If blog is not published, only owner can view
             if not blog.is_published and blog.created_by != request.user:
@@ -210,6 +210,36 @@ class UpdateBlog(APIView):
             return Response(
                 {
                     "error": "Something went wrong while updating the blog.",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+class DeleteBlog(APIView):
+
+    def patch(self, request, id):
+        try:
+            try:
+                blog = Blog.objects.get(id=id, created_by=request.user, is_deleted=False)
+            except Blog.DoesNotExist:
+                return Response(
+                    {"error": "Blog not found or unauthorized"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Soft delete
+            blog.is_deleted = True
+            blog.save()
+
+            return Response(
+                {"message": "Blog deleted successfully"},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "error": "Something went wrong while deleting the blog.",
                     "details": str(e)
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

@@ -8,12 +8,16 @@ import Spinner from "../../components/ui/Spinner";
 import Breadcrumb from "../../components/ui/BreadCrumb";
 import { FiEdit, FiArrowLeft } from "react-icons/fi";
 import NoDataFallback from "../../components/ui/NoDataFallback";
-
+import { MdDelete } from "react-icons/md";
+import ConfirmationModal from "../../components/ui/ConfirmationModal";
+import toast
+    from "react-hot-toast";
 export default function BlogDetailsPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchBlog = async () => {
         try {
@@ -49,19 +53,42 @@ export default function BlogDetailsPage() {
         );
     }
 
+    const handleDelete = async () => {
+        try {
+            setLoading(true);
+            await userAuthenticateAxios.patch(`/blog/delete-blog/${id}/`);
+            toast.success("Blog deleted successfully");
+            navigate("/user/dashboard");
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to delete the blog");
+        } finally {
+            setLoading(false);
+            setIsModalOpen(false);
+        }
+    };
+
+
     return (
 
         <div className="p-6 relative">
             <Breadcrumb items={breadcrumbItems} />
 
             {/* Top Right Edit Button */}
-            <div className="absolute right-6 top-6">
+            <div className="absolute right-6 top-6 flex space-x-4">
                 <Button
                     icon={FiEdit}
                     className="px-4 py-2 rounded-sm"
                     onClick={() => navigate(`../edit-blog/${id}`)}
                 >
                     Edit
+                </Button>
+                <Button
+                    icon={MdDelete}
+                    className="px-4 py-2 bg-brand-3 text-white rounded-sm"
+                    onClick={() => setIsModalOpen(true)}
+                >
+                    Delete
                 </Button>
             </div>
 
@@ -85,6 +112,13 @@ export default function BlogDetailsPage() {
                     Back to Blogs
                 </Button>
             </div>
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                title="Delete Blog"
+                message="Are you sure you want to delete this blog? This action cannot be undone."
+                onConfirm={handleDelete}
+                onCancel={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

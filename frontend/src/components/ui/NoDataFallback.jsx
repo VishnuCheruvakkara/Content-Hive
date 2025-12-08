@@ -8,7 +8,7 @@ export default function NoDataFallback({
     onBack,
 }) {
     return (
-        <div className="p-6 w-full flex justify-center">
+        <div className=" w-full flex justify-center">
             <div className="w-full max-w-6xl p-6 bg-gray-900/50 rounded border border-gray-700 text-center flex flex-col items-center">
                 
                 {image && (

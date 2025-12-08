@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import InlineSpinner from "../../components/ui/InlineSpinner";
 import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
 import Pagination from "../../components/ui/Pagination";
-import SearchBar from "../../components/ui/SearchBar";  // <-- ADD THIS
+import SearchBar from "../../components/ui/SearchBar";
 import useDebounce from "../../hooks/useDebounce";
 import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import FormattedDate from "../../components/ui/FormattedData";
 import Breadcrumb from "../../components/ui/BreadCrumb";
+import NoDataFallback from "../../components/ui/NoDataFallback";
 
 export default function UserPosts() {
   const navigate = useNavigate();
@@ -78,10 +79,13 @@ export default function UserPosts() {
       {loading ? (
         <InlineSpinner size={45} />
       ) : blogs?.length === 0 ? (
-        <div className="p-6 bg-gray-900/50 rounded border border-gray-700 text-center flex flex-col items-center">
-          <img src="/no_search.svg" alt="No blogs" className="w-60 h-60" />
-          <p className="text-white font-medium text-sm">No blogs found.</p>
-        </div>
+        
+          <NoDataFallback
+            message="No blogs found."
+            image="/no_search.svg"
+            onBack={null} // hide back button if not needed
+          />
+       
       ) : (
         blogs.map((blog) => (
           <div

@@ -11,7 +11,8 @@ class Blog(models.Model):
     content_html = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-created_at']
