@@ -91,11 +91,11 @@ export default function BlogListPage({
 
                     <div
                         key={blog.id}
-                        className="mb-6 p-4 bg-gray-900/50 rounded cursor-pointer"
+                        className="mb-6 p-4 bg-gray-900/50 rounded "
 
                     >
                         {/* User Info Section */}
-                        <div className="flex items-center mb-3" onClick={() =>
+                        <div className="flex items-center mb-3 cursor-pointer" onClick={() =>
                             navigate(`${detailPath}/${blog.id}`, {
                                 state: { from: title === "Explore Posts" ? "explore" : "my-posts" }
                             })
@@ -128,7 +128,7 @@ export default function BlogListPage({
                             navigate(`${detailPath}/${blog.id}`, {
                                 state: { from: title === "Explore Posts" ? "explore" : "my-posts" }
                             })
-                        } className="border-l-4 border-brand-3 bg-brand-3/20 pl-3 py-3">
+                        } className=" cursor-pointer border-l-4 border-brand-3 bg-brand-3/20 pl-3 py-3">
                             <h3 className="text-xl font-bold text-white">{blog.title}</h3>
                             <p className="text-white/80 mt-2">{blog.description}</p>
                         </div>
@@ -158,6 +158,9 @@ export default function BlogListPage({
 
                             </div>
                         </div>
+                         
+                        
+
                     </div>
 
 

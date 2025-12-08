@@ -12,6 +12,9 @@ import { MdDelete } from "react-icons/md";
 import ConfirmationModal from "../../components/ui/ConfirmationModal";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import { FaRegComment } from "react-icons/fa";
+import BlogInteractionBar from "../../components/ui/BloggerInteractionBar";
 
 export default function BlogDetailsPage() {
     const { id } = useParams();
@@ -138,6 +141,14 @@ export default function BlogDetailsPage() {
             <div className="mb-6 bg-white/10 rounded-md p-3 overflow-x-hidden">
                 <TipTapViewer content={blog?.content_html} />
             </div>
+
+            <div className="my-1 border-t border-gray-500" />
+
+            {/* Like / Dislike / Comment Bar */}
+            <BlogInteractionBar
+                likes={blog?.likes}
+                comments={blog?.comments}
+            />
 
             {/* Back Button */}
             <div className="mt-6">
