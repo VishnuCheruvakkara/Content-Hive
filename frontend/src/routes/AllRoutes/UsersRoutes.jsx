@@ -5,6 +5,7 @@ import UserPosts from '../../pages/UserDashboardPage/UsersPosts'
 import BlogCreatePage from '../../pages/BlogPage/BlogCreatePage'
 import BlogDetailsPage from '../../pages/BlogPage/BlogDetailsPage'
 import BlogEditPage from '../../pages/BlogPage/BlogEditPage'
+import ExplorePosts from '../../pages/UserDashboardPage/ExplorePosts'
 
 function UsersRoutes() {
   return (
@@ -14,6 +15,8 @@ function UsersRoutes() {
         <Route path="create-article" element={<BlogCreatePage />} />
         <Route path="blog-details/:id" element={<BlogDetailsPage />} />
         <Route path="edit-blog/:id" element={<BlogEditPage />} />
+
+        <Route path="explore" element={<ExplorePosts />} />
 
       </Route>
     </Routes>
