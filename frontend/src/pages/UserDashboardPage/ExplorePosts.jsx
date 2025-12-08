@@ -1,11 +1,15 @@
-import React from 'react'
+import BlogListPage from "../BlogPage/BlogListPage";
 
-function ExplorePosts() {
-  return (
-    <div>
-      Explore now .....
-    </div>
-  )
+export default function ExplorePosts() {
+    return (
+        <BlogListPage
+            apiEndpoint="/blog/explore-blogs/"
+            title="Explore Posts"
+            detailPath="../blog-details"
+            breadcrumbItems={[
+                { label: "Home", link: "/" },
+                { label: "Explore Posts" },
+            ]}
+        />
+    );
 }
-
-export default ExplorePosts

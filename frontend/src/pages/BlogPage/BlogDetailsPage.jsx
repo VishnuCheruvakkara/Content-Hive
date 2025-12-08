@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
 import FormattedDate from "../../components/ui/FormattedData";
 import Button from "../../components/ui/Button";
@@ -10,20 +10,25 @@ import { FiEdit, FiArrowLeft } from "react-icons/fi";
 import NoDataFallback from "../../components/ui/NoDataFallback";
 import { MdDelete } from "react-icons/md";
 import ConfirmationModal from "../../components/ui/ConfirmationModal";
-import toast
-    from "react-hot-toast";
+import toast from "react-hot-toast";
+import useAuth from "../../hooks/useAuth";
+
 export default function BlogDetailsPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user } = useAuth();
+    const location = useLocation();
+    const from = location.state?.from || "/user/dashboard";
 
     const fetchBlog = async () => {
         try {
             setLoading(true);
             const response = await userAuthenticateAxios.get(`/blog/get-single-blog/${id}/`);
             setBlog(response.data.data);
+            console.log("Blogs : ", response.data.data)
         } catch (error) {
             console.error(error);
         } finally {
@@ -35,11 +40,21 @@ export default function BlogDetailsPage() {
         fetchBlog();
     }, [id]);
 
-    const breadcrumbItems = [
-        { label: "Home", link: "/" },
-        { label: "My Blog Posts", link: "/user/dashboard" },
-        { label: "Blog details" },
-    ];
+    let breadcrumbItems;
+
+    if (from.includes("explore")) {
+        breadcrumbItems = [
+            { label: "Home", link: "/" },
+            { label: "Explore Posts", link: "../explore" },
+            { label: "Blog details" }
+        ];
+    } else {
+        breadcrumbItems = [
+            { label: "Home", link: "/" },
+            { label: "My Blog Posts", link: "/user/dashboard" },
+            { label: "Blog details" }
+        ];
+    }
 
     if (loading) return <Spinner />
 
@@ -75,22 +90,24 @@ export default function BlogDetailsPage() {
             <Breadcrumb items={breadcrumbItems} />
 
             {/* Top Right Edit Button */}
-            <div className="absolute right-6 top-6 flex space-x-4">
-                <Button
-                    icon={FiEdit}
-                    className="px-4 py-2 rounded-sm"
-                    onClick={() => navigate(`../edit-blog/${id}`)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    icon={MdDelete}
-                    className="px-4 py-2 bg-brand-3 text-white rounded-sm"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Delete
-                </Button>
-            </div>
+            {blog?.created_by?.id == user?.id && (
+                <div className="absolute right-6 top-6 flex space-x-4">
+                    <Button
+                        icon={FiEdit}
+                        className="px-4 py-2 rounded-sm"
+                        onClick={() => navigate(`../edit-blog/${id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        icon={MdDelete}
+                        className="px-4 py-2 bg-brand-3 text-white rounded-sm"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
+            )}
 
 
             {/* Published Date */}

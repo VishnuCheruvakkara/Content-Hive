@@ -244,3 +244,37 @@ class DeleteBlog(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class ExploreBlogs(APIView):
+
+    def get(self, request):
+        try:
+            search = request.query_params.get("q", "")
+            
+            blogs = Blog.objects.filter(
+                is_deleted=False,
+                is_published=True
+            ).order_by("-created_at")
+
+            if search:
+                blogs = blogs.filter(title__icontains=search)
+
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
+            result_page = paginator.paginate_queryset(blogs, request)
+            serializer = BlogSerializer(result_page, many=True)
+
+            return paginator.get_paginated_response(serializer.data)
+
+        except DatabaseError:
+            return Response({
+                "success": False,
+                "message": "Database error occurred while fetching blogs."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Something went wrong while fetching blogs.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
