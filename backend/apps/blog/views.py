@@ -108,7 +108,7 @@ class GetUsersBlogs(APIView):
             paginator = PageNumberPagination()
             paginator.page_size = 5
             result_page = paginator.paginate_queryset(blogs, request)
-            serializer = BlogSerializer(result_page, many=True)
+            serializer = BlogSerializer(result_page, many=True,context={"request":request})
 
             return paginator.get_paginated_response(serializer.data)
 
@@ -262,7 +262,7 @@ class ExploreBlogs(APIView):
             paginator = PageNumberPagination()
             paginator.page_size = 5
             result_page = paginator.paginate_queryset(blogs, request)
-            serializer = BlogSerializer(result_page, many=True)
+            serializer = BlogSerializer(result_page, many=True,context={"request":request})
 
             return paginator.get_paginated_response(serializer.data)
 

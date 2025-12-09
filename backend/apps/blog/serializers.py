@@ -86,6 +86,12 @@ class BlogSerializer(serializers.ModelSerializer):
     description = serializers.CharField(validators=[validate_description])
     content_html = serializers.CharField(validators=[validate_content])
 
+    like_count = serializers.SerializerMethodField()
+    dislike_count = serializers.SerializerMethodField()
+    comment_count = serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    is_disliked = serializers.SerializerMethodField()
+
     class Meta:
         model = Blog
         fields = [
@@ -97,9 +103,37 @@ class BlogSerializer(serializers.ModelSerializer):
             'updated_at',
             'is_published',
             'created_by',
+
+            "like_count",
+            "dislike_count",
+            "comment_count",
+            "is_liked",
+            "is_disliked",
         ]
         read_only_fields = ["id", "created_by", "created_at", "updated_at"]
 
+    def get_like_count(self, obj):
+        return obj.likes.filter(reaction="like").count()
+
+    def get_dislike_count(self, obj):
+        return obj.likes.filter(reaction="dislike").count()
+
+    def get_comment_count(self, obj):
+        return obj.comments.count()
+
+    def get_is_liked(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+
+        return obj.likes.filter(user=request.user, reaction="like").exists()
+
+    def get_is_disliked(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+
+        return obj.likes.filter(user=request.user, reaction="dislike").exists()
 
 class BlogDetailSerializer(serializers.ModelSerializer):
     created_by = UserMiniSerializer(read_only=True)

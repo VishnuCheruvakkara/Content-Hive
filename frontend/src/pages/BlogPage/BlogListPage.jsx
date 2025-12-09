@@ -5,7 +5,7 @@ import SearchBar from "../../components/ui/SearchBar";
 import useDebounce from "../../hooks/useDebounce";
 import FormattedDate from "../../components/ui/FormattedData";
 import NoDataFallback from "../../components/ui/NoDataFallback";
-import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import { AiOutlineLike, AiFillLike, AiOutlineDislike, AiFillDislike } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Breadcrumb from "../../components/ui/BreadCrumb";
@@ -136,30 +136,44 @@ export default function BlogListPage({
                         <div className="my-1 border-t border-gray-700" />
 
                         {/* Likes / Dislikes / Comments */}
-                        <div className="flex justify-end items-center text-white text-sm mt-3">
-                            <div className="flex items-center space-x-5">
+                        <div className="flex justify-end items-center text-sm mt-3 space-x-5">
 
-                                {/* Like */}
-                                <div className="flex items-center space-x-2">
+                            {/* Like */}
+                            <div
+                                className={`flex items-center space-x-2 ${blog.is_liked ? "text-[hsl(329,100%,73%)]" : "text-gray-300"
+                                    }`}
+                            >
+                                {blog.is_liked ? (
+                                    <AiFillLike size={18} />
+                                ) : (
                                     <AiOutlineLike size={18} />
-                                    <span>{blog.likes || 0}</span>
-                                </div>
-
-                                {/* Dislike (icon only, no count) */}
-                                <div className="flex items-center">
-                                    <AiOutlineDislike size={18} />
-                                </div>
-
-                                {/* Comment */}
-                                <div className="flex items-center space-x-2">
-                                    <FaRegComment size={16} />
-                                    <span>{blog.comments || 0}</span>
-                                </div>
-
+                                )}
+                                <span>{blog.like_count}</span>
                             </div>
+
+                            {/* Dislike */}
+                            <div
+                                className={`flex items-center space-x-2 ${blog.is_disliked ? "text-red-500" : "text-gray-300"
+                                    }`}
+                            >
+                                {blog.is_disliked ? (
+                                    <AiFillDislike size={18} />
+                                ) : (
+                                    <AiOutlineDislike size={18} />
+                                )}
+                                <span>{blog.dislike_count}</span>
+                            </div>
+
+                            {/* Comments */}
+                            <div className="flex items-center space-x-2 text-gray-300">
+                                <FaRegComment size={16} />
+                                <span>{blog.comment_count}</span>
+                            </div>
+
                         </div>
-                         
-                        
+
+
+
 
                     </div>
 

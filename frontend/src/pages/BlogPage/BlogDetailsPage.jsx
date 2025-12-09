@@ -55,6 +55,11 @@ export default function BlogDetailsPage() {
 
             setIsLiked(is_liked);
             setLikeCount(likes_count);
+            if (is_liked) {
+                toast.success("Liked");
+            } else {
+                toast.success("Removed Like");
+            }
         } catch (error) {
             console.error(error);
         }
