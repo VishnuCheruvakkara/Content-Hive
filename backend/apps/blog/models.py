@@ -27,7 +27,8 @@ class Comment(models.Model):
     text = models.TextField(max_length=500)
     created_at = models.DateTimeField(default=timezone.now)
     is_approved = models.BooleanField(default=True)
-
+    is_deleted = models.BooleanField(default=False)
+    
     class Meta:
         ordering = ['-created_at']
 

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Button from "./Button";
 import { IoMdSend } from "react-icons/io";
 import FormattedDate from "./FormattedData";
+import { MdDelete } from "react-icons/md";
+import ConfirmationModal from "./ConfirmationModal";
+import useAuth from "../../hooks/useAuth";
 
 import {
     AiOutlineLike,
@@ -20,11 +23,18 @@ export default function BlogInteractionBar({
     onLike = () => { },
     onDislike = () => { },
     onAddComment = () => { },
+    onDeleteComment = () => { },
     viewCount = 0,
+    blogOwnerId,
 }) {
 
     const [open, setOpen] = useState(false);
     const [newComment, setNewComment] = useState("");
+
+    const [showModal, setShowModal] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+
+    const { isAdmin, user } = useAuth();
 
     const handleAddComment = () => {
         if (!newComment.trim()) return;
@@ -33,6 +43,16 @@ export default function BlogInteractionBar({
         setNewComment("");
     };
 
+    const handleConfirmDelete = () => {
+        onDeleteComment(deleteId);
+        setShowModal(false);
+        setDeleteId(null);
+    };
+
+    const handleCancelDelete = () => {
+        setShowModal(false);
+        setDeleteId(null);
+    };
 
 
     return (
@@ -130,11 +150,22 @@ export default function BlogInteractionBar({
                                         </div>
 
                                         <div className="flex-1">
-                                            <div className="flex justify-between items-center">
-                                                <p className="text-white text-sm">{c.user}</p>
-                                                <p className="text-gray-200 text-xs">
-                                                    <FormattedDate dateString={c.created_at} />
-                                                </p>
+                                            <div className="flex justify-between  items-start ">
+                                                <p className="text-white text-sm">{c.user} - <FormattedDate dateString={c.created_at} /></p>
+
+                                                {(isAdmin || user?.id === c.user_id || user?.id === blogOwnerId) && (
+                                                    <span
+                                                        className="p-1.5 rounded-lg hover:bg-brand-1 cursor-pointer transition duration-300 shrink-0 ml-2 border border-brand-4/30 "
+                                                        onClick={() => {
+                                                            setDeleteId(c.id);
+                                                            setShowModal(true);
+                                                        }}
+                                                    >
+                                                        <MdDelete size={20} className="text-brand-4" />
+                                                    </span>
+                                                )}
+
+
                                             </div>
 
                                             <p className="text-gray-300 text-sm mt-1 font-semibold">
@@ -148,6 +179,13 @@ export default function BlogInteractionBar({
                     </div>
                 )}
             </div>
+            <ConfirmationModal
+                isOpen={showModal}
+                title="Delete Comment?"
+                message="Are you sure you want to delete this comment?"
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+            />
 
 
         </div>

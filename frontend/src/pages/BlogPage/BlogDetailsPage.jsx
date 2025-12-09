@@ -156,6 +156,22 @@ export default function BlogDetailsPage() {
         );
     }
 
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await userAuthenticateAxios.delete(
+                `/blog/delete-comment/${commentId}/`
+            );
+
+            setComments((prev) => prev.filter((c) => c.id !== commentId));
+
+            toast.success("Comment deleted successfully");
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to delete comment");
+        }
+    };
+
+
     const handleDelete = async () => {
         try {
             setLoading(true);
@@ -211,7 +227,7 @@ export default function BlogDetailsPage() {
                     <Button
                         icon={FiEdit}
                         className="px-4 py-2 rounded-sm"
-                        onClick={() => navigate(`../edit-blog/${id}`,{state:{from : isAdmin ? "admin":"user"}})}
+                        onClick={() => navigate(`../edit-blog/${id}`, { state: { from: isAdmin ? "admin" : "user" } })}
                     >
                         Edit
                     </Button>
@@ -242,6 +258,8 @@ export default function BlogDetailsPage() {
                 onLike={handleLike}
                 onAddComment={handleAddComment}
                 viewCount={blog?.view_count}
+                onDeleteComment={handleDeleteComment}
+                blogOwnerId={blog?.created_by?.id}   
             />
 
             {/* Back Button */}

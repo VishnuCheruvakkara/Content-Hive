@@ -499,3 +499,44 @@ class AdminBlogList(APIView):
                 "message": "Something went wrong while fetching blogs.",
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class DeleteComment(APIView):
+
+    def delete(self, request, id):
+        try:
+            
+            try:
+                comment = Comment.objects.get(id=id, is_deleted=False)
+            except Comment.DoesNotExist:
+                return Response(
+                    {"error": "Comment not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+           
+            if not (
+                request.user == comment.blog.created_by or 
+                request.user.is_staff
+            ):
+                return Response(
+                    {"error": "You don't have permission to delete this comment"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+           
+            comment.is_deleted = True
+            comment.save()
+
+            return Response(
+                {"message": "Comment deleted successfully"},
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "error": "Something went wrong",
+                    "details": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
