@@ -7,10 +7,6 @@ import useAuth from "../hooks/useAuth";
 
 import {
   FaHome,
-  FaHeart,
-  FaShoppingCart,
-  FaUser,
-  FaCog
 } from "react-icons/fa";
 import { MdOutlineTravelExplore } from "react-icons/md";
 
@@ -23,10 +19,6 @@ export default function UserLayout() {
   const menuItems = [
     { path: "/user/dashboard", name: "Home", icon: <FaHome />,end:true },
     { path: "/user/dashboard/explore", name: "Explore", icon: <MdOutlineTravelExplore /> },
-    { path: "/user/favorites", name: "Favorites", icon: <FaHeart /> },
-    { path: "/user/cart", name: "Cart", icon: <FaShoppingCart /> },
-    { path: "/user/profile", name: "Profile", icon: <FaUser /> },
-    { path: "/user/settings", name: "Settings", icon: <FaCog /> }
   ];
 
   const userInfo = {
