@@ -161,7 +161,6 @@ export default function BlogListPage({
                                 ) : (
                                     <AiOutlineDislike size={18} />
                                 )}
-                                <span>{blog.dislike_count}</span>
                             </div>
 
                             {/* Comments */}
