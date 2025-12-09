@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SignUp, SignIn, Logout, CustomTokenRefresh,GetUserData,GetCSRFToken,AdminSignIn,AdminUsersList, ToggleUserStatus
+from .views import SignUp, SignIn, Logout, CustomTokenRefresh,GetUserData,GetCSRFToken,AdminSignIn,AdminUsersList, ToggleUserStatus,AdminDashboardStats
 
 urlpatterns = [
     path("sign-up/", SignUp.as_view(), name="sign-up"),
@@ -14,4 +14,7 @@ urlpatterns = [
     path("admin-login/",AdminSignIn.as_view(),name="admin-login"),
     path("users-list/", AdminUsersList.as_view(), name="admin-users-list"),
     path("toggle-user-status/<int:user_id>/", ToggleUserStatus.as_view(), name="toggle-user-status"),
+
+    path("admin-dashboard-stats/", AdminDashboardStats.as_view(), name="admin-dashboard-stats"),
+
 ]

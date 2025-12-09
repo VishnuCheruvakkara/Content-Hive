@@ -12,9 +12,9 @@ function Hero() {
                         <span className="text-sm text-white/80">CMS · Blogging · Admin</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">ContentHive — build, publish & share content daily</h1>
+                    <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">ContentHive - build, publish & share content daily</h1>
 
-                    <p className="mt-6 text-lg text-white/85 max-w-xl">A minimal, secure CMS with REST APIs, admin controls, and a modern frontend — built to help creators publish polished content every day.</p>
+                    <p className="mt-6 text-lg text-white/85 max-w-xl">A minimal, secure CMS with REST APIs, admin controls, and a modern frontend - built to help creators publish polished content every day.</p>
 
                     <div className="mt-8 flex gap-4">
                         <a href="/signup" className="px-6 py-3 rounded-xl bg-brand-4 text-brand-1 font-semibold shadow-lg hover:scale-[.99] transition">Get Started</a>

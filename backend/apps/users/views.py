@@ -21,6 +21,7 @@ from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from django.db import DatabaseError
 from django.shortcuts import get_object_or_404
+from blog.models import Blog,Comment,Like 
 
 User = get_user_model()
 
@@ -332,3 +333,14 @@ class ToggleUserStatus(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+class AdminDashboardStats(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        return Response({
+            "total_users": User.objects.count(),
+            "total_posts": Blog.objects.filter(is_deleted=False).count(),
+            "total_comments": Comment.objects.count(),
+            "total_likes": Like.objects.filter(reaction="like").count(),
+        })
