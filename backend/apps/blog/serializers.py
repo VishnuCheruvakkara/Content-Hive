@@ -229,3 +229,5 @@ class CommentSerializer(serializers.ModelSerializer):
             text=validated_data["text"]
         )
         return comment
+    
+

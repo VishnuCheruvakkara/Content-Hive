@@ -6,6 +6,7 @@ import AdminBlogManagement from '../../pages/AdminDashboardPages/AdminBlogManage
 import BlogDetailsPage from '../../pages/BlogPage/BlogDetailsPage'
 import BlogEditPage from '../../pages/BlogPage/BlogEditPage'
 import BlogCreatePage from '../../pages/BlogPage/BlogCreatePage'
+import AdminUserManagement from '../../pages/AdminDashboardPages/AdminUserManagement'
 
 function AdminRoutes() {
   return (
@@ -16,6 +17,7 @@ function AdminRoutes() {
         <Route path="blog-details/:id" element={<BlogDetailsPage />} />
         <Route path="edit-blog/:id" element={<BlogEditPage />} />
         <Route path="create-article" element={<BlogCreatePage />} />
+        <Route path="user-management" element={<AdminUserManagement />} />
 
       </Route>
     </Routes>

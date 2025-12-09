@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
-from .serializers import SignUpSerializer, LoginSerializer
+from .serializers import SignUpSerializer, LoginSerializer, UserSerializer
 from .utils import (
     generate_tokens_for_user,
     set_refresh_token_cookie,
@@ -17,6 +17,10 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
+from django.db import DatabaseError
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -247,3 +251,84 @@ class AdminSignIn(APIView):
             {"status": "error", "message": "Validation failed"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+    
+
+class AdminUsersList(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        try:
+            search = request.query_params.get("q", "")
+
+            users = User.objects.filter(is_staff=False)
+
+            if search:
+                users = users.filter(
+                    Q(username__icontains=search) |
+                    Q(email__icontains=search)
+                )
+
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
+            result_page = paginator.paginate_queryset(users, request)
+
+            serializer = UserSerializer(result_page, many=True)
+
+            return paginator.get_paginated_response(serializer.data)
+
+        except DatabaseError:
+            return Response({
+                "success": False,
+                "message": "Database error occurred while fetching users."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Something went wrong while fetching users.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ToggleUserStatus(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, user_id):
+        try:
+            action = request.data.get("action")
+
+            if action not in ["activate", "deactivate"]:
+                return Response(
+                    {"success": False, "message": "Invalid action"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if request.user.id == user_id:
+                return Response(
+                    {"success": False, "message": "Admin cannot deactivate themselves."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = get_object_or_404(User, id=user_id)
+
+            # Update active status
+            user.is_active = (action == "activate")
+            user.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": f"User {action}d successfully",
+                    "is_active": user.is_active,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

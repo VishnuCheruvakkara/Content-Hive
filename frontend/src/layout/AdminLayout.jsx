@@ -4,15 +4,12 @@ import Header from "../components/Landing/Header";
 import Footer from "../components/Landing/Footer";
 import Sidebar from "../components/sidebar/Sidebar";
 import useAuth from "../hooks/useAuth";
+import { MdOutlineDashboard } from "react-icons/md";
 
 import {
     FaTachometerAlt,
     FaNewspaper,
     FaUsers,
-    FaComment,
-    FaThumbsUp,
-    FaCog,
-    FaChartBar
 } from "react-icons/fa";
 
 function AdminLayout() {
@@ -21,9 +18,9 @@ function AdminLayout() {
     const { user } = useAuth();
 
     const menuItems = [
-        { path: "/admin/dashboard", name: "Dashboard", icon: <FaTachometerAlt />,end:true },
+        { path: "/admin/dashboard", name: "Dashboard", icon: <MdOutlineDashboard />,end:true },
         { path: "/admin/dashboard/blogs", name: "Manage Blogs", icon: <FaNewspaper /> },
-        { path: "/admin/users", name: "Manage Users", icon: <FaUsers /> },
+        { path: "/admin/dashboard/user-management", name: "Manage Users", icon: <FaUsers /> },
     ];
 
     // User info

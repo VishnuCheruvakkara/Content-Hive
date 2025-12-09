@@ -11,7 +11,9 @@ from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from blog.models import Blog,Like
 from django.db.models import F,Q
+from django.contrib.auth import get_user_model
 
+User=get_user_model()
 
 class ImageUpload(APIView):
     def post(self, request):
