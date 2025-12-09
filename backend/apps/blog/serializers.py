@@ -1,7 +1,7 @@
 from rest_framework import serializers
 import os
 from rest_framework import serializers
-from blog.models import Blog
+from blog.models import Blog,Comment
 from django.contrib.auth import get_user_model 
 from .validators import validate_title, validate_description, validate_content
 
@@ -193,3 +193,37 @@ class BlogDetailSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj):
         return obj.comments.filter(is_approved=True).count()
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.username", read_only=True)
+    text = serializers.CharField()
+
+    class Meta:
+        model = Comment
+        fields = ["id", "user", "text", "created_at"]
+
+    def validate_text(self, value):
+        """Use your bleach cleaning and validations here"""
+        import bleach, re
+
+        if not value or len(value.strip()) == 0:
+            raise serializers.ValidationError("Comment cannot be empty.")
+        if len(value) > 500:
+            raise serializers.ValidationError("Comment cannot exceed 500 characters.")
+
+        # Clean HTML/JS
+        clean_text = bleach.clean(value, strip=True)
+        return clean_text
+
+    def create(self, validated_data):
+        user = self.context.get("user")
+        blog = self.context.get("blog")
+        if not user or not blog:
+            raise serializers.ValidationError("User and blog must be provided in context.")
+        
+        comment = Comment.objects.create(
+            blog=blog,
+            user=user,
+            text=validated_data["text"]
+        )
+        return comment

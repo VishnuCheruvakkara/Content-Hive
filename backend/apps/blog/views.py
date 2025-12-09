@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .utils import upload_to_cloudinary,upload_to_supabase
-from .serializers import DocumentUploadSerializer,ImageUploadSerializer,BlogSerializer,BlogDetailSerializer
+from .serializers import DocumentUploadSerializer,ImageUploadSerializer,BlogSerializer,BlogDetailSerializer,CommentSerializer
 from cloudinary.exceptions import Error as CloudinaryError
-from blog.models import Blog
+from blog.models import Blog,Comment
 from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
@@ -404,4 +404,37 @@ class ToggleDislike(APIView):
                     "error": str(e)
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+class AddComment(APIView):
+
+    def post(self, request, blog_id):
+        user = request.user
+        if user.is_anonymous:
+            return Response(
+                {"success": False, "message": "Authentication required."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        blog = get_object_or_404(Blog, id=blog_id, is_deleted=False)
+
+        serializer = CommentSerializer(
+            data=request.data,
+            context={"user": user, "blog": blog}
+        )
+        
+        if serializer.is_valid():
+            comment = serializer.save()
+            return Response(
+                {
+                    "success": True,
+                    "message": "Comment added successfully.",
+                    "comment": CommentSerializer(comment).data,
+                },
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                {"success": False, "message": "Validation failed.", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
             )

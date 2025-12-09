@@ -79,7 +79,7 @@ export default function BlogDetailsPage() {
                 `/blog/toggle-dislike/${id}/`
             );
 
-            const { is_disliked,likes_count } = response.data;
+            const { is_disliked, likes_count } = response.data;
             setIsDisliked(is_disliked);
             setLikeCount(likes_count)
 
@@ -94,6 +94,24 @@ export default function BlogDetailsPage() {
             toast.error("Something went wrong!");
         }
     };
+
+    const handleAddComment = async (text) => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/add-comment/${id}/`,
+                { text : text }
+            );
+
+            const newComment = response.data.comment;
+            setComments((prev) => [newComment, ...prev]);
+
+            toast.success("Comment added!");
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to add comment");
+        }
+    };
+
 
     useEffect(() => {
         fetchBlog();
@@ -209,6 +227,7 @@ export default function BlogDetailsPage() {
                 isDisliked={isDisliked}
                 onDislike={handleDislike}
                 onLike={handleLike}
+                onAddComment={handleAddComment}
             />
 
             {/* Back Button */}
