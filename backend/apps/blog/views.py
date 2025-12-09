@@ -235,11 +235,18 @@ class DeleteBlog(APIView):
     def patch(self, request, id):
         try:
             try:
-                blog = Blog.objects.get(id=id, created_by=request.user, is_deleted=False)
+                blog = Blog.objects.get(id=id, is_deleted=False)
             except Blog.DoesNotExist:
                 return Response(
                     {"error": "Blog not found or unauthorized"},
                     status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Permission Check
+            if not (request.user == blog.created_by or request.user.is_staff):
+                return Response(
+                    {"error": "You do not have permission to delete this blog"},
+                    status=status.HTTP_403_FORBIDDEN
                 )
 
             # Soft delete
@@ -464,7 +471,7 @@ class AdminBlogList(APIView):
         try:
             search = request.query_params.get("q", "")
             
-            blogs = Blog.objects.all().order_by("-created_at")
+            blogs = Blog.objects.filter(is_deleted=False,is_published=True)
 
             if search:
                 blogs = blogs.filter(

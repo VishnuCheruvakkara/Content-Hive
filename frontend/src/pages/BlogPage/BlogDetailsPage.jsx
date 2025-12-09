@@ -175,9 +175,7 @@ export default function BlogDetailsPage() {
         }
     };
 
-
     return (
-
         <div className="p-6 relative">
             <Breadcrumb items={breadcrumbItems} />
 

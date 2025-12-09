@@ -20,7 +20,7 @@ export default function BlogListPage({
     breadcrumbItems,
     showCreateButton = false,
     detailPath = "/user/blog-details",
-    isAdmin = False
+    isAdmin = false
 }) {
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -70,7 +70,8 @@ export default function BlogListPage({
                     <Button
                         icon={MdAssignmentAdd}
                         className="bg-brand-3 px-4 py-2 rounded text-white"
-                        onClick={() => navigate("create-article")}
+                        onClick={() => navigate(isAdmin ? "../create-article" : "create-article")}
+
                     >
                         Create Article
                     </Button>

@@ -21,7 +21,7 @@ function AdminLayout() {
     const { user } = useAuth();
 
     const menuItems = [
-        { path: "/", name: "Dashboard", icon: <FaTachometerAlt />,end:true },
+        { path: "/admin/dashboard", name: "Dashboard", icon: <FaTachometerAlt />,end:true },
         { path: "/admin/dashboard/blogs", name: "Manage Blogs", icon: <FaNewspaper /> },
         { path: "/admin/users", name: "Manage Users", icon: <FaUsers /> },
         { path: "/admin/comments", name: "Comments", icon: <FaComment /> },

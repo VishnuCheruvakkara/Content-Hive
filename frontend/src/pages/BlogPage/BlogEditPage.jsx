@@ -58,7 +58,8 @@ export default function BlogEditPage() {
     if (from === "admin") {
         breadcrumbItems = [
             { label: "Dashboard", link: "/admin/dashboard" },
-            { label: "All Blogs", link: "/admin/dashboard/blogs" },
+            { label: "All Blogs", link: "/admin/dashboard/blog-details/{id:}" },
+            { label: "Blog Details", link: `/admin/dashboard/blog-details/${id}` },
             { label: "Edit Blog" },
         ];
     } else {
