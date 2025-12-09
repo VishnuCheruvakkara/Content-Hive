@@ -228,6 +228,7 @@ export default function BlogDetailsPage() {
                 onDislike={handleDislike}
                 onLike={handleLike}
                 onAddComment={handleAddComment}
+                viewCount={blog?.view_count}
             />
 
             {/* Back Button */}

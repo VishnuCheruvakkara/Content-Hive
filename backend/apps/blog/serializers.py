@@ -106,6 +106,7 @@ class BlogSerializer(serializers.ModelSerializer):
             "comment_count",
             "is_liked",
             "is_disliked",
+            "view_count",
         ]
         read_only_fields = ["id", "created_by", "created_at", "updated_at"]
 
@@ -154,6 +155,7 @@ class BlogDetailSerializer(serializers.ModelSerializer):
             "is_disliked_by_user",
             "comments",
             "comments_count",
+            "view_count",
         ]
 
     def get_likes_count(self, obj):

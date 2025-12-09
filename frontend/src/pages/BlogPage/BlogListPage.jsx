@@ -136,39 +136,48 @@ export default function BlogListPage({
                         <div className="my-1 border-t border-gray-700" />
 
                         {/* Likes / Dislikes / Comments */}
-                        <div className="flex justify-end items-center text-sm mt-3 space-x-5">
+                        <div className="flex justify-between items-center text-sm mt-3">
 
-                            {/* Like */}
-                            <div
-                                className={`flex items-center space-x-2 ${blog.is_liked ? "text-[#ff75bc]" : "text-gray-300"
-                                    }`}
-                            >
-                                {blog.is_liked ? (
-                                    <AiFillLike size={18} />
-                                ) : (
-                                    <AiOutlineLike size={18} />
-                                )}
-                                <span>{blog.like_count}</span>
-                            </div>
+                            {/* LEFT SIDE — VIEWS */}
+                            <span>{blog.view_count} Views</span>
 
-                            {/* Dislike */}
-                            <div
-                                className={`flex items-center space-x-2 ${blog.is_disliked ? "text-[#ff75bc]" : "text-gray-300"
-                                    }`}
-                            >
-                                {blog.is_disliked ? (
-                                    <AiFillDislike size={18} />
-                                ) : (
-                                    <AiOutlineDislike size={18} />
-                                )}
-                            </div>
+                            {/* RIGHT SIDE — LIKE / DISLIKE / COMMENTS */}
+                            <div className="flex items-center space-x-5">
 
-                            {/* Comments */}
-                            <div className="flex items-center space-x-2 text-gray-300">
-                                <FaRegComment size={16} />
-                                <span>{blog.comment_count}</span>
+                                {/* Like */}
+                                <div
+                                    className={`flex items-center space-x-2 ${blog.is_liked ? "text-[#ff75bc]" : "text-gray-300"
+                                        }`}
+                                >
+                                    {blog.is_liked ? (
+                                        <AiFillLike size={18} />
+                                    ) : (
+                                        <AiOutlineLike size={18} />
+                                    )}
+                                    <span>{blog.like_count}</span>
+                                </div>
+
+                                {/* Dislike */}
+                                <div
+                                    className={`flex items-center space-x-2 ${blog.is_disliked ? "text-[#ff75bc]" : "text-gray-300"
+                                        }`}
+                                >
+                                    {blog.is_disliked ? (
+                                        <AiFillDislike size={18} />
+                                    ) : (
+                                        <AiOutlineDislike size={18} />
+                                    )}
+                                </div>
+
+                                {/* Comments */}
+                                <div className="flex items-center space-x-2 text-gray-300">
+                                    <FaRegComment size={16} />
+                                    <span>{blog.comment_count}</span>
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
                 ))
             )}

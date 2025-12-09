@@ -10,6 +10,8 @@ from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from blog.models import Blog,Like
+from django.db.models import F
+
 class ImageUpload(APIView):
     def post(self, request):
         serializer = ImageUploadSerializer(data=request.data)
@@ -134,6 +136,8 @@ class GetSingleBlog(APIView):
     def get(self, request, blog_id):
         try:
             blog = get_object_or_404(Blog, id=blog_id, is_deleted=False )
+
+            Blog.objects.filter(id=blog_id).update(view_count=F("view_count") + 1)
 
             # If blog is not published, only owner can view
             if not blog.is_published and blog.created_by != request.user:

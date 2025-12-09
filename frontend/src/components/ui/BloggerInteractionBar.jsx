@@ -20,6 +20,7 @@ export default function BlogInteractionBar({
     onLike = () => { },
     onDislike = () => { },
     onAddComment = () => { },
+    viewCount = 0,
 }) {
 
     const [open, setOpen] = useState(false);
@@ -38,44 +39,44 @@ export default function BlogInteractionBar({
         <div className="mt-4">
 
             {/* Interaction Bar */}
-            <div className="flex justify-end items-center text-white text-sm">
+            <div className="flex justify-between items-center text-white text-sm">
+
+                {/* LEFT SIDE — VIEW COUNT */}
+                <span>{viewCount} Views</span>
+
+                {/* RIGHT SIDE — LIKE / DISLIKE / COMMENT */}
                 <div className="flex items-center space-x-1">
 
-                    {/* LIKE BUTTON */}
+                    {/* LIKE */}
                     <div
-                        className={`flex items-center justify-center w-20 space-x-2  cursor-pointer 
-                        ${isLiked ? "text-[#ff75bc]" : "text-gray-300"}
-                        hover:bg-white/10 p-2 rounded-lg transition-all duration-200`}
+                        className={`flex items-center justify-center w-20 space-x-2 cursor-pointer 
+            ${isLiked ? "text-[#ff75bc]" : "text-gray-300"}
+            hover:bg-white/10 p-2 rounded-lg transition-all duration-200`}
                         onClick={onLike}
                     >
                         {isLiked ? <AiFillLike size={18} /> : <AiOutlineLike size={18} />}
                         <span>{likes}</span>
                     </div>
 
-
-
-                    {/* DISLIKE BUTTON */}
+                    {/* DISLIKE */}
                     <div
                         className={`flex items-center justify-center w-20 space-x-2 cursor-pointer 
-                        ${isDisliked ? "text-[#ff75bc]" : "text-gray-300"}
-                        hover:bg-white/10 p-2 rounded-lg transition-all duration-200`}
+            ${isDisliked ? "text-[#ff75bc]" : "text-gray-300"}
+            hover:bg-white/10 p-2 rounded-lg transition-all duration-200`}
                         onClick={onDislike}
                     >
                         {isDisliked ? <AiFillDislike size={18} /> : <AiOutlineDislike size={18} />}
                     </div>
 
-
-
-                    {/* COMMENT TOGGLE */}
+                    {/* COMMENTS */}
                     <div
                         className="flex items-center justify-center w-20 space-x-2 cursor-pointer text-gray-300
-                        hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
+            hover:bg-white/10 p-2 rounded-lg transition-all duration-200"
                         onClick={() => setOpen(!open)}
                     >
                         <FaRegComment size={16} />
                         <span>{comments}</span>
                     </div>
-
 
                 </div>
             </div>
