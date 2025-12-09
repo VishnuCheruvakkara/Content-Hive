@@ -20,7 +20,7 @@ export default function BlogDetailsPage() {
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { user } = useAuth();
+    const { user, isAdmin } = useAuth();
     const location = useLocation();
     const from = location.state?.from || "/user/dashboard";
 
@@ -99,7 +99,7 @@ export default function BlogDetailsPage() {
         try {
             const response = await userAuthenticateAxios.post(
                 `/blog/add-comment/${id}/`,
-                { text : text }
+                { text: text }
             );
 
             const newComment = response.data.comment;
@@ -119,17 +119,28 @@ export default function BlogDetailsPage() {
 
     let breadcrumbItems;
 
-    if (from.includes("explore")) {
+    if (from === "admin") {
+        // admin breadcrumb
+        breadcrumbItems = [
+            { label: "Dashboard", link: "/" },
+            { label: "All Blogs", link: "/admin/dashboard/blogs" },
+            { label: "Blog Details" }
+        ];
+    }
+    else if (from === "explore") {
+        // user explore
         breadcrumbItems = [
             { label: "Home", link: "/" },
-            { label: "Explore Posts", link: "../explore" },
-            { label: "Blog details" }
+            { label: "Explore Posts", link: "/user/dashboard/explore" },
+            { label: "Blog Details" }
         ];
-    } else {
+    }
+    else {
+        // user my posts
         breadcrumbItems = [
             { label: "Home", link: "/" },
             { label: "My Blog Posts", link: "/user/dashboard" },
-            { label: "Blog details" }
+            { label: "Blog Details" }
         ];
     }
 
@@ -150,7 +161,11 @@ export default function BlogDetailsPage() {
             setLoading(true);
             await userAuthenticateAxios.patch(`/blog/delete-blog/${id}/`);
             toast.success("Blog deleted successfully");
-            navigate("/user/dashboard");
+            if (isAdmin) {
+                navigate("/admin/dashboard/blogs");
+            } else {
+                navigate("/user/dashboard");
+            }
         } catch (error) {
             console.error(error);
             toast.error("Failed to delete the blog");
@@ -193,12 +208,12 @@ export default function BlogDetailsPage() {
 
 
             {/* Top Right Edit Button */}
-            {blog?.created_by?.id == user?.id && (
+            {(isAdmin || blog?.created_by?.id === user?.id) && (
                 <div className="absolute right-6 top-6 flex space-x-4">
                     <Button
                         icon={FiEdit}
                         className="px-4 py-2 rounded-sm"
-                        onClick={() => navigate(`../edit-blog/${id}`)}
+                        onClick={() => navigate(`../edit-blog/${id}`,{state:{from : isAdmin ? "admin":"user"}})}
                     >
                         Edit
                     </Button>

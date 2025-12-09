@@ -10,7 +10,8 @@ from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from blog.models import Blog,Like
-from django.db.models import F
+from django.db.models import F,Q
+
 
 class ImageUpload(APIView):
     def post(self, request):
@@ -105,7 +106,10 @@ class GetUsersBlogs(APIView):
             blogs = Blog.objects.filter(created_by=user,is_deleted=False).order_by("-created_at")
 
             if search:
-                blogs = blogs.filter(title__icontains=search)
+                blogs = blogs.filter(
+                    Q(title__icontains=search) |
+                    Q(created_by__username__icontains=search)
+                )
 
             paginator = PageNumberPagination()
             paginator.page_size = 5
@@ -182,11 +186,18 @@ class UpdateBlog(APIView):
     def patch(self, request, id):
         try:
             try:
-                blog = Blog.objects.get(id=id, created_by=request.user)
+                blog = Blog.objects.get(id=id, is_deleted=False)
             except Blog.DoesNotExist:
                 return Response(
                     {"error": "Blog not found or unauthorized"},
                     status=status.HTTP_404_NOT_FOUND
+                )
+            
+            # Permission Check
+            if not (request.user == blog.created_by or request.user.is_staff):
+                return Response(
+                    {"error": "You do not have permission to update this blog"},
+                    status=status.HTTP_403_FORBIDDEN
                 )
 
             serializer = BlogSerializer(blog, data=request.data, partial=True)
@@ -261,7 +272,10 @@ class ExploreBlogs(APIView):
             ).order_by("-created_at")
 
             if search:
-                blogs = blogs.filter(title__icontains=search)
+                blogs = blogs.filter(
+                    Q(title__icontains=search) |
+                    Q(created_by__username__icontains=search)
+                )
 
             paginator = PageNumberPagination()
             paginator.page_size = 5
@@ -442,3 +456,39 @@ class AddComment(APIView):
                 {"success": False, "message": "Validation failed.", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+class AdminBlogList(APIView):
+    permission_classes = [IsAdminUser] 
+
+    def get(self, request):
+        try:
+            search = request.query_params.get("q", "")
+            
+            blogs = Blog.objects.all().order_by("-created_at")
+
+            if search:
+                blogs = blogs.filter(
+                    Q(title__icontains=search) |
+                    Q(created_by__username__icontains=search) |
+                    Q(created_by__email__icontains=search)
+                )
+
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
+            result_page = paginator.paginate_queryset(blogs, request)
+            serializer = BlogSerializer(result_page, many=True, context={"request": request})
+
+            return paginator.get_paginated_response(serializer.data)
+
+        except DatabaseError:
+            return Response({
+                "success": False,
+                "message": "Database error occurred while fetching blogs."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": "Something went wrong while fetching blogs.",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

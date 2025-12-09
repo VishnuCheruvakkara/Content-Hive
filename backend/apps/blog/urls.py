@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateBlog,DocumentUpload,ImageUpload,GetUsersBlogs,GetSingleBlog,UpdateBlog,DeleteBlog,ExploreBlogs,ToggleLike,ToggleDislike,AddComment
+from .views import CreateBlog,DocumentUpload,ImageUpload,GetUsersBlogs,GetSingleBlog,UpdateBlog,DeleteBlog,ExploreBlogs,ToggleLike,ToggleDislike,AddComment,AdminBlogList
 urlpatterns = [
     path("create-blog/", CreateBlog.as_view(), name="create-blog"),
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path("toggle-dislike/<int:blog_id>/", ToggleDislike.as_view(), name="toggle-dislike"),
 
     path("add-comment/<int:blog_id>/", AddComment.as_view(), name="add-comment"),
+    path("admin-blogs/", AdminBlogList.as_view(), name="admin-blogs"),
 
 ]

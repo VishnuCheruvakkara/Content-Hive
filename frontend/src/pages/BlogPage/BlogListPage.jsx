@@ -20,6 +20,7 @@ export default function BlogListPage({
     breadcrumbItems,
     showCreateButton = false,
     detailPath = "/user/blog-details",
+    isAdmin = False
 }) {
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -97,7 +98,7 @@ export default function BlogListPage({
                         {/* User Info Section */}
                         <div className="flex items-center mb-3 cursor-pointer" onClick={() =>
                             navigate(`${detailPath}/${blog.id}`, {
-                                state: { from: title === "Explore Posts" ? "explore" : "my-posts" }
+                                state: { from: isAdmin ? "admin" : (title === "Explore Posts" ? "explore" : "my-posts") }
                             })
                         }
                         >
@@ -124,11 +125,13 @@ export default function BlogListPage({
                         <div className="my-1 border-t border-gray-700" />
 
 
-                        <div onClick={() =>
-                            navigate(`${detailPath}/${blog.id}`, {
-                                state: { from: title === "Explore Posts" ? "explore" : "my-posts" }
-                            })
-                        } className=" cursor-pointer border-l-4 border-brand-3 bg-brand-3/20 pl-3 py-3">
+                        <div
+                            onClick={() =>
+                                navigate(`${detailPath}/${blog.id}`, {
+                                    state: { from: isAdmin ? "admin" : (title === "Explore Posts" ? "explore" : "my-posts") }
+                                })
+                            }
+                            className=" cursor-pointer border-l-4 border-brand-3 bg-brand-3/20 pl-3 py-3">
                             <h3 className="text-xl font-bold text-white">{blog.title}</h3>
                             <p className="text-white/80 mt-2">{blog.description}</p>
                         </div>

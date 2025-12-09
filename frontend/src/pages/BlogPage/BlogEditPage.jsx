@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
 import TipTapEditor from "../../components/TipTapEditor/TipTapEditor";
 import Spinner from "../../components/ui/Spinner";
@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 export default function BlogEditPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from || "user";
 
     const [loading, setLoading] = useState(true);
     const [blog, setBlog] = useState(null);
@@ -50,11 +52,22 @@ export default function BlogEditPage() {
         }
     };
 
-    const breadcrumbItems = [
-        { label: "Home", link: "/" },
-        { label: "My Blog Posts", link: "/user/dashboard" },
-        { label: "Edit Blog" },
-    ];
+
+    let breadcrumbItems;
+
+    if (from === "admin") {
+        breadcrumbItems = [
+            { label: "Dashboard", link: "/admin/dashboard" },
+            { label: "All Blogs", link: "/admin/dashboard/blogs" },
+            { label: "Edit Blog" },
+        ];
+    } else {
+        breadcrumbItems = [
+            { label: "Home", link: "/" },
+            { label: "My Blog Posts", link: "/user/dashboard" },
+            { label: "Edit Blog" },
+        ];
+    }
 
     if (loading) return <Spinner />;
 

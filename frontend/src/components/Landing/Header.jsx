@@ -10,6 +10,7 @@ import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { MdLogout } from "react-icons/md";
+import { FaHive } from "react-icons/fa6";
 
 function Header({ sidebarOpen, onToggleSidebar }) {
     const { isAuthenticated,user } = useAuth();
@@ -52,7 +53,9 @@ function Header({ sidebarOpen, onToggleSidebar }) {
                     }
 
                     <Link to="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
+                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">
+                            <FaHive size={ 30 } />
+                        </div>
                         <div className="text-white font-semibold tracking-wide">ContentHive</div>
                     </Link>
                 </div>
