@@ -6,7 +6,6 @@ urlpatterns = [
     path("login/", SignIn.as_view(), name="login"),
     path("logout/", Logout.as_view(), name="logout"),
     
-
     path("token-refresh/",CustomTokenRefresh.as_view(),name="token-refresh"),
     path("get-user-data/",GetUserData.as_view(),name="get-user-data"),
 

@@ -9,9 +9,10 @@ import { logoutSuccess } from '../../redux/Slice/userAuthSlice'
 import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
+import { MdLogout } from "react-icons/md";
 
 function Header({ sidebarOpen, onToggleSidebar }) {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated,user } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -83,12 +84,29 @@ function Header({ sidebarOpen, onToggleSidebar }) {
                             </Button>
                         </>
                     ) : (
-                        <Button
-                            onClick={handleLogout}
-                            className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
-                        >
-                            Logout
-                        </Button>
+                        <div className="flex items-center gap-4">
+
+                            {/* User Icon + Username */}
+                            {user && (
+                                <div className="flex items-center gap-3  border p-1 rounded-xl pr-4 border-white/40 cursor-pointer ">
+                                    <div className="w-8 h-8 rounded-lg bg-brand-3 text-white flex items-center justify-center font-bold">
+                                        {user?.username?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="text-white font-semibold">
+                                        {user?.username}
+                                    </span>
+                                </div>
+                            )}
+
+                            {/* Logout Button */}
+                                <Button
+                                icon={MdLogout }
+                                onClick={handleLogout}
+                                className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
+                            >
+                                Logout
+                            </Button>
+                        </div>
                     )}
                 </div>
 

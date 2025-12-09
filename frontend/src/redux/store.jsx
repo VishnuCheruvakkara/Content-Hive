@@ -7,9 +7,8 @@ import userAuthReducer from "./Slice/userAuthSlice";
 const userAuthPersistConfig = {
   key: "userAuth",       
   storage,
-  whitelist: ["access"], 
+  whitelist: ["user","access"], 
 };
-
 
 const persistedUserAuthReducer = persistReducer(userAuthPersistConfig, userAuthReducer);
 
