@@ -24,10 +24,6 @@ function AdminLayout() {
         { path: "/admin/dashboard", name: "Dashboard", icon: <FaTachometerAlt />,end:true },
         { path: "/admin/dashboard/blogs", name: "Manage Blogs", icon: <FaNewspaper /> },
         { path: "/admin/users", name: "Manage Users", icon: <FaUsers /> },
-        { path: "/admin/comments", name: "Comments", icon: <FaComment /> },
-        { path: "/admin/likes", name: "Likes", icon: <FaThumbsUp /> },
-        { path: "/admin/analytics", name: "Analytics", icon: <FaChartBar /> },
-        { path: "/admin/settings", name: "Settings", icon: <FaCog /> },
     ];
 
     // User info
