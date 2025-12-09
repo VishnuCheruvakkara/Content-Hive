@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { AiOutlineLike, AiOutlineDislike, AiFillLike } from "react-icons/ai";
+import { 
+    AiOutlineLike, 
+    AiOutlineDislike, 
+    AiFillLike, 
+    AiFillDislike 
+} from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 
 export default function BlogInteractionBar({
@@ -7,8 +12,11 @@ export default function BlogInteractionBar({
     comments = 0,
     commentList = [],
     isLiked = false,
-    onLike = () => { },
+    isDisliked = false,
+    onLike = () => {},
+    onDislike = () => {},
 }) {
+
     const [open, setOpen] = useState(false);
 
     return (
@@ -20,8 +28,9 @@ export default function BlogInteractionBar({
 
                     {/* LIKE BUTTON */}
                     <div
-                        className={`flex items-center space-x-2 cursor-pointer ${isLiked ? "text-[hsl(329,100%,73%)]" : "text-gray-300"
-                            }`}
+                        className={`flex items-center space-x-2 cursor-pointer ${
+                            isLiked ? "text-[#ff75bc]" : "text-gray-300"
+                        }`}
                         onClick={onLike}
                     >
                         {isLiked ? (
@@ -33,13 +42,21 @@ export default function BlogInteractionBar({
                         <span>{likes}</span>
                     </div>
 
-
-                    {/* Dislike */}
-                    <div className="flex items-center cursor-pointer">
-                        <AiOutlineDislike size={18} />
+                    {/* DISLIKE BUTTON */}
+                    <div
+                        className={`flex items-center space-x-2 cursor-pointer ${
+                            isDisliked ? "text-[#ff75bc]" : "text-gray-300"
+                        }`}
+                        onClick={onDislike}
+                    >
+                        {isDisliked ? (
+                            <AiFillDislike size={18} />
+                        ) : (
+                            <AiOutlineDislike size={18} />
+                        )}
                     </div>
 
-                    {/* Comment Toggle */}
+                    {/* COMMENT TOGGLE */}
                     <div
                         className="flex items-center space-x-2 cursor-pointer"
                         onClick={() => setOpen(!open)}

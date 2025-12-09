@@ -27,6 +27,8 @@ export default function BlogDetailsPage() {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
 
+    const [isDisliked, setIsDisliked] = useState(false);
+
     const [comments, setComments] = useState([]);
 
     const fetchBlog = async () => {
@@ -36,6 +38,7 @@ export default function BlogDetailsPage() {
             setBlog(response.data.data);
             setLikeCount(response?.data?.data?.likes_count);
             setIsLiked(response?.data?.data?.is_liked_by_user);
+            setIsDisliked(response?.data?.data?.is_disliked_by_user)
             setComments(response?.data?.data?.comments);
             console.log("Blogs : ", response?.data?.data)
         } catch (error) {
@@ -55,6 +58,11 @@ export default function BlogDetailsPage() {
 
             setIsLiked(is_liked);
             setLikeCount(likes_count);
+
+            if (is_liked) {
+                setIsDisliked(false);
+            }
+
             if (is_liked) {
                 toast.success("Liked");
             } else {
@@ -65,6 +73,27 @@ export default function BlogDetailsPage() {
         }
     };
 
+    const handleDislike = async () => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/toggle-dislike/${id}/`
+            );
+
+            const { is_disliked,likes_count } = response.data;
+            setIsDisliked(is_disliked);
+            setLikeCount(likes_count)
+
+            if (is_disliked) {
+                setIsLiked(false);
+                toast.success("Disliked");
+            } else {
+                toast.success("Removed Dislike");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Something went wrong!");
+        }
+    };
 
     useEffect(() => {
         fetchBlog();
@@ -177,6 +206,8 @@ export default function BlogDetailsPage() {
                 comments={comments.length}
                 commentList={comments}
                 isLiked={isLiked}
+                isDisliked={isDisliked}
+                onDislike={handleDislike}
                 onLike={handleLike}
             />
 

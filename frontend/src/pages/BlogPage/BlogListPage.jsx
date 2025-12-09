@@ -140,7 +140,7 @@ export default function BlogListPage({
 
                             {/* Like */}
                             <div
-                                className={`flex items-center space-x-2 ${blog.is_liked ? "text-[hsl(329,100%,73%)]" : "text-gray-300"
+                                className={`flex items-center space-x-2 ${blog.is_liked ? "text-[#ff75bc]" : "text-gray-300"
                                     }`}
                             >
                                 {blog.is_liked ? (
@@ -153,7 +153,7 @@ export default function BlogListPage({
 
                             {/* Dislike */}
                             <div
-                                className={`flex items-center space-x-2 ${blog.is_disliked ? "text-red-500" : "text-gray-300"
+                                className={`flex items-center space-x-2 ${blog.is_disliked ? "text-[#ff75bc]" : "text-gray-300"
                                     }`}
                             >
                                 {blog.is_disliked ? (
@@ -169,16 +169,8 @@ export default function BlogListPage({
                                 <FaRegComment size={16} />
                                 <span>{blog.comment_count}</span>
                             </div>
-
                         </div>
-
-
-
-
                     </div>
-
-
-
                 ))
             )}
 

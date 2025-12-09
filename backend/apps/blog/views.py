@@ -338,3 +338,70 @@ class ToggleLike(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class ToggleDislike(APIView):
+
+    def post(self, request, blog_id):
+        try:
+            blog = get_object_or_404(Blog, id=blog_id, is_deleted=False)
+            user = request.user
+
+            if user.is_anonymous:
+                return Response(
+                    {"success": False, "message": "Authentication required."},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            # Get or create the reaction object
+            dislike_obj, created = Like.objects.get_or_create(
+                blog=blog,
+                user=user,
+                defaults={"reaction": Like.DISLIKE}
+            )
+
+            if not created and dislike_obj.reaction == Like.DISLIKE:
+                dislike_obj.reaction = Like.NONE
+                dislike_obj.save()
+                is_disliked = False
+
+            else:
+                
+                dislike_obj.reaction = Like.DISLIKE
+                dislike_obj.save()
+                is_disliked = True
+
+                Like.objects.filter(
+                    blog=blog,
+                    user=user,
+                    reaction=Like.LIKE
+                ).update(reaction=Like.NONE)
+
+            likes_count = blog.likes.filter(reaction=Like.LIKE).count()
+
+            return Response(
+                {
+                    "success": True,
+                    "is_disliked": is_disliked,
+                    "likes_count": likes_count,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except DatabaseError:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Database error while updating dislike."
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong.",
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
