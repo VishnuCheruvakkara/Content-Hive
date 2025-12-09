@@ -99,3 +99,69 @@ class BlogSerializer(serializers.ModelSerializer):
             'created_by',
         ]
         read_only_fields = ["id", "created_by", "created_at", "updated_at"]
+
+
+class BlogDetailSerializer(serializers.ModelSerializer):
+    created_by = UserMiniSerializer(read_only=True)
+
+    likes_count = serializers.SerializerMethodField()
+    is_liked_by_user = serializers.SerializerMethodField()
+    is_disliked_by_user = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Blog
+        fields = [
+            "id",
+            "title",
+            "description",
+            "content_html",
+            "created_at",
+            "updated_at",
+            "is_published",
+            "created_by",
+            "likes_count",
+            "is_liked_by_user",
+            "is_disliked_by_user",
+            "comments",
+            "comments_count",
+        ]
+
+    def get_likes_count(self, obj):
+        return obj.likes.filter(reaction="like").count()
+
+    def get_is_liked_by_user(self, obj):
+        request = self.context.get("request")
+        user = request.user
+
+        if user.is_anonymous:
+            return False
+
+        return obj.likes.filter(user=user, reaction="like").exists()
+
+    def get_is_disliked_by_user(self, obj):
+        request = self.context.get("request")
+        user = request.user
+
+        if user.is_anonymous:
+            return False
+
+        return obj.likes.filter(user=user, reaction="dislike").exists()
+
+    def get_comments(self, obj):
+        comments = obj.comments.filter(is_approved=True).order_by("-created_at")
+
+        return [
+            {
+                "id": c.id,
+                "user": c.user.username,
+                "user_id": c.user.id,
+                "text": c.text,
+                "created_at": c.created_at,
+            }
+            for c in comments
+        ]
+
+    def get_comments_count(self, obj):
+        return obj.comments.filter(is_approved=True).count()

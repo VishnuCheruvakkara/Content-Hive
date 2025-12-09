@@ -12,8 +12,6 @@ import { MdDelete } from "react-icons/md";
 import ConfirmationModal from "../../components/ui/ConfirmationModal";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
-import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
-import { FaRegComment } from "react-icons/fa";
 import BlogInteractionBar from "../../components/ui/BloggerInteractionBar";
 
 export default function BlogDetailsPage() {
@@ -26,18 +24,42 @@ export default function BlogDetailsPage() {
     const location = useLocation();
     const from = location.state?.from || "/user/dashboard";
 
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+
+    const [comments, setComments] = useState([]);
+
     const fetchBlog = async () => {
         try {
             setLoading(true);
             const response = await userAuthenticateAxios.get(`/blog/get-single-blog/${id}/`);
             setBlog(response.data.data);
-            console.log("Blogs : ", response.data.data)
+            setLikeCount(response?.data?.data?.likes_count);
+            setIsLiked(response?.data?.data?.is_liked_by_user);
+            setComments(response?.data?.data?.comments);
+            console.log("Blogs : ", response?.data?.data)
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
         }
     };
+
+    const handleLike = async () => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/toggle-like/${id}/`
+            );
+
+            const { is_liked, likes_count } = response.data;
+
+            setIsLiked(is_liked);
+            setLikeCount(likes_count);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     useEffect(() => {
         fetchBlog();
@@ -146,8 +168,11 @@ export default function BlogDetailsPage() {
 
             {/* Like / Dislike / Comment Bar */}
             <BlogInteractionBar
-                likes={blog?.likes}
-                comments={blog?.comments}
+                likes={likeCount}
+                comments={comments.length}
+                commentList={comments}
+                isLiked={isLiked}
+                onLike={handleLike}
             />
 
             {/* Back Button */}

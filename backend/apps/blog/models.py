@@ -34,13 +34,26 @@ class Comment(models.Model):
         return f"{self.user} - {self.blog.title}"
 
 class Like(models.Model):
+
+    LIKE = "like"
+    DISLIKE = "dislike"
+    NONE = "none"
+
+    REACTION_CHOICES = [
+        (LIKE, "Like"),
+        (DISLIKE, "Dislike"),
+        (NONE, "None"),
+    ]
+
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name="likes")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes")
-    is_like = models.BooleanField(default=True)
+    reaction = models.CharField(max_length=10, choices=REACTION_CHOICES, default=NONE)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         unique_together = ("blog", "user")
+        verbose_name = "Blog Reaction"
+        verbose_name_plural = "Blog Reactions"
 
     def __str__(self):
-        return f"{self.user} - {self.blog.title} - {'Like' if self.is_like else 'Unlike'}"
+        return f"{self.user} → {self.blog.title} ({self.reaction})"

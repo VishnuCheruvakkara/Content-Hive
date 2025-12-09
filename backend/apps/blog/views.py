@@ -3,13 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .utils import upload_to_cloudinary,upload_to_supabase
-from .serializers import DocumentUploadSerializer,ImageUploadSerializer,BlogSerializer
+from .serializers import DocumentUploadSerializer,ImageUploadSerializer,BlogSerializer,BlogDetailSerializer
 from cloudinary.exceptions import Error as CloudinaryError
 from blog.models import Blog
 from django.db import DatabaseError
 from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
-
+from blog.models import Blog,Like
 class ImageUpload(APIView):
     def post(self, request):
         serializer = ImageUploadSerializer(data=request.data)
@@ -145,7 +145,7 @@ class GetSingleBlog(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
-            serializer = BlogSerializer(blog)
+            serializer = BlogDetailSerializer(blog, context={"request":request})
             return Response(
                 {
                     "success": True,
@@ -278,3 +278,63 @@ class ExploreBlogs(APIView):
                 "message": "Something went wrong while fetching blogs.",
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ToggleLike(APIView):
+
+    def post(self, request, blog_id):
+        try:
+            blog = get_object_or_404(Blog, id=blog_id, is_deleted=False)
+
+            user = request.user
+            if user.is_anonymous:
+                return Response(
+                    {"success": False, "message": "Authentication required."},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
+
+            like_obj, created = Like.objects.get_or_create(
+                blog=blog,
+                user=user,
+                defaults={"reaction": Like.LIKE}
+            )
+
+            if not created and like_obj.reaction == Like.LIKE:
+                like_obj.reaction = Like.NONE
+                like_obj.save()
+                is_liked = False
+
+            else:
+                like_obj.reaction = Like.LIKE
+                like_obj.save()
+                is_liked = True
+
+            likes_count = blog.likes.filter(reaction=Like.LIKE).count()
+
+            return Response(
+                {
+                    "success": True,
+                    "is_liked": is_liked,
+                    "likes_count": likes_count,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except DatabaseError:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Database error while updating like."
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong.",
+                    "error": str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
