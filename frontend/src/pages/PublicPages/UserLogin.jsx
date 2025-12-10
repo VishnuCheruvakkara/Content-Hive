@@ -115,13 +115,13 @@ function UserLogin() {
                         )}
                     </Formik>
 
-                    <div className="my-6 flex items-center gap-4">
+                    {/* <div className="my-6 flex items-center gap-4">
                         <div className="flex-1 h-px bg-white/20"></div>
                         <span className="text-white/40 text-sm">OR</span>
                         <div className="flex-1 h-px bg-white/20"></div>
-                    </div>
+                    </div> */}
 
-                    <GoogleButton />
+                    {/* <GoogleButton /> */}
 
                     <p className="text-center text-white/70 text-sm mt-6">
                         Don’t have an account?{" "}

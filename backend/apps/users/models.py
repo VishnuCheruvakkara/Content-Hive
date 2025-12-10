@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ["username"]
 
     class Meta:
-        ordering = ["-date_joined"] 
+        ordering = ["-date_joined"]
 
     def __str__(self):
         return f"{self.username} - {self.email}"

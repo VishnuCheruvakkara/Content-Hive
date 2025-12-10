@@ -34,7 +34,7 @@ function Footer() {
                 </div>
             </div>
 
-            <div className="mt-8 border-t border-white/20 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive — Built for MARLO exercise</div>
+            <div className="mt-8 border-t border-white/20 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive - Built for MARLO exercise</div>
         </footer>
     )
 }
