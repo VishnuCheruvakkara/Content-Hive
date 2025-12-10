@@ -45,7 +45,6 @@ function UserSignup() {
                 password: values.password,
             });
 
-            console.log("Signup Success:", res.data);
             dispatch(
                 loginSuccess({
                     access: res.data.data.access, 
@@ -62,7 +61,6 @@ function UserSignup() {
             navigate("/user/dashboard/");
 
         } catch (error) {
-            console.log("Signup Error:", error.response?.data);
             toast.error("Signup failed. Please try again.")
         } finally {
             setLoading(false);

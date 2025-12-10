@@ -40,9 +40,8 @@ export default function BlogDetailsPage() {
             setIsLiked(response?.data?.data?.is_liked_by_user);
             setIsDisliked(response?.data?.data?.is_disliked_by_user)
             setComments(response?.data?.data?.comments);
-            console.log("Blogs : ", response?.data?.data)
         } catch (error) {
-            console.error(error);
+            // console.error(error);
         } finally {
             setLoading(false);
         }
@@ -69,7 +68,7 @@ export default function BlogDetailsPage() {
                 toast.success("Removed Like");
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
         }
     };
 
@@ -90,7 +89,7 @@ export default function BlogDetailsPage() {
                 toast.success("Removed Dislike");
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             toast.error("Something went wrong!");
         }
     };
@@ -107,7 +106,7 @@ export default function BlogDetailsPage() {
 
             toast.success("Comment added!");
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             toast.error("Failed to add comment");
         }
     };
@@ -166,7 +165,7 @@ export default function BlogDetailsPage() {
 
             toast.success("Comment deleted successfully");
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             toast.error("Failed to delete comment");
         }
     };
@@ -183,7 +182,7 @@ export default function BlogDetailsPage() {
                 navigate("/user/dashboard");
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             toast.error("Failed to delete the blog");
         } finally {
             setLoading(false);

@@ -40,7 +40,7 @@ export default function UserManagementPage() {
             const count = response?.data?.count || 0;
             setTotalPages(Math.ceil(count / pageSize));
         } catch (error) {
-            console.error("Fetch Users Error:", error);
+            // console.error("Fetch Users Error:", error);
         } finally {
             setLoading(false);
         }
@@ -80,7 +80,7 @@ export default function UserManagementPage() {
                 )
             );
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             toast.error("Something went wrong");
         } finally {
             setIsModalOpen(false);

@@ -58,7 +58,6 @@ function UserLogin() {
 
 
         } catch (error) {
-            console.log("Login Error:", error.response?.data);
             toast.error("Invalid credentials.");
         } finally {
             setLoading(false);

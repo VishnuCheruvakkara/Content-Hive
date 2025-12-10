@@ -20,7 +20,6 @@ function BlogCreatePage() {
         blogContent
       );
 
-      console.log("Blog saved:", response.data);
       if (isAdmin) {
         navigate("/admin/dashboard/blogs");
       } else {
@@ -28,7 +27,7 @@ function BlogCreatePage() {
       }
       toast.success("Blog created!");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error("Failed to create blog");
     } finally {
       setLoading(false);

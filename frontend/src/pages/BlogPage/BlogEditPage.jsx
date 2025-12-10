@@ -22,7 +22,7 @@ export default function BlogEditPage() {
             setBlog(response.data.data);
         } catch (error) {
             toast.error("Failed to fetch blog details");
-            console.error(error);
+            // console.error(error);
         } finally {
             setLoading(false);
         }
@@ -46,7 +46,7 @@ export default function BlogEditPage() {
             navigate(`../blog-details/${id}`);
         } catch (error) {
             toast.error("Failed to update blog");
-            console.error(error);
+            // console.error(error);
         } finally {
             setLoading(false);
         }

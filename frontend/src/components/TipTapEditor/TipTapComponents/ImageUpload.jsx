@@ -17,7 +17,7 @@ export const handleImageUpload = async (file, editor) => {
 
     editor.chain().focus().setImage({ src: imageUrl }).run();
   } catch (error) {
-    console.error("Image upload failed:", error);
+    // console.error("Image upload failed:", error);
     toast.error("Failed to upload image", { id: toastId });
   }
 };

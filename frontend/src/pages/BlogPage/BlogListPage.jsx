@@ -41,15 +41,13 @@ export default function BlogListPage({
                 params: { page: pageNumber, q: debouncedSearch },
             });
 
-            console.log("Blog Lists :", response?.data?.results)
-
             setBlogs(response?.data?.results || []);
             setPage(pageNumber);
 
             const count = response?.data?.count || 0;
             setTotalPages(Math.ceil(count / 5));
         } catch (error) {
-            console.error(error);
+            // console.error(error);
         } finally {
             setLoading(false);
         }

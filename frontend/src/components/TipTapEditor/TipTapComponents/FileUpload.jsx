@@ -22,7 +22,7 @@ export const handleFileUpload = async (file, editor) => {
       </p>
     `).run();
   } catch (error) {
-    console.error("File upload failed:", error);
+    // console.error("File upload failed:", error);
     toast.error("Failed to upload file", { id: toastId });
   }
 };

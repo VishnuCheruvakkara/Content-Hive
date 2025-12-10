@@ -20,8 +20,6 @@ export default function AdminDashboard() {
       const response = await userAuthenticateAxios.get("/users/admin-dashboard-stats/");
       const data = response.data;
 
-      console.log("Dashboard : ",data)
-
       setStats({
         totalUsers: data.total_users,
         totalPosts: data.total_posts,
@@ -31,7 +29,7 @@ export default function AdminDashboard() {
       });
 
     } catch (error) {
-      console.error("Dashboard API Error:", error);
+      // console.error("Dashboard API Error:", error);
     } finally {
       setLoading(false);
     }

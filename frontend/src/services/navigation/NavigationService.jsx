@@ -8,6 +8,6 @@ export const navigateTo = (path) => {
     if (navigateFunction) {
         navigateFunction(path);
     } else {
-        console.error("NavigationService: navigate function not set");
+        // console.error("NavigationService: navigate function not set");
     }
 };

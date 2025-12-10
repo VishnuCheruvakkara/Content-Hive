@@ -58,7 +58,6 @@ function AdminLogin() {
             navigate("/admin/dashboard/");
 
         } catch (error) {
-            console.log("Admin Login Error:", error.response?.data);
             toast.error("Invalid admin credentials.");
         } finally {
             setLoading(false);
