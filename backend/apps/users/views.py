@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
-from .serializers import SignUpSerializer, LoginSerializer
+from .serializers import SignUpSerializer, LoginSerializer, UserSerializer
 from .utils import (
     generate_tokens_for_user,
     set_refresh_token_cookie,
@@ -17,8 +17,14 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
+from django.db import DatabaseError
+from django.shortcuts import get_object_or_404
+from blog.models import Blog, Comment, Like
 
 User = get_user_model()
+
 
 class SignUp(APIView):
 
@@ -46,7 +52,7 @@ class SignUp(APIView):
                             "username": user.username,
                             "email": user.email,
                             "access": tokens["access"],
-                            "is_admin":user.is_staff,
+                            "is_admin": user.is_staff,
                         },
                     },
                     status=status.HTTP_201_CREATED,
@@ -133,6 +139,7 @@ class Logout(APIView):
         remove_refresh_token_cookie(request, response)
         return response
 
+
 class CustomTokenRefresh(TokenRefreshView):
 
     def post(self, request, *args, **kwargs):
@@ -157,8 +164,8 @@ class CustomTokenRefresh(TokenRefreshView):
                 raise InvalidToken("Token refresh failed")
 
             token_obj = RefreshToken(new_refresh)
-            user_id=token_obj["user_id"]
-            user=User.objects.get(id=user_id)
+            user_id = token_obj["user_id"]
+            user = User.objects.get(id=user_id)
 
             res = Response(
                 {
@@ -169,7 +176,7 @@ class CustomTokenRefresh(TokenRefreshView):
                         "username": user.username,
                         "email": user.email,
                         "access": new_access,
-                        "is_admin":user.is_staff,
+                        "is_admin": user.is_staff,
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -183,6 +190,8 @@ class CustomTokenRefresh(TokenRefreshView):
                 {"status": "error", "message": "Invalid refresh token"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
+
+
 # Check user is authenticated or not
 class GetUserData(APIView):
 
@@ -194,13 +203,14 @@ class GetUserData(APIView):
             },
             status=status.HTTP_200_OK,
         )
-    
+
+
 # Generate csrf before app start
-@method_decorator(ensure_csrf_cookie, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name="dispatch")
 class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request,*args,**kwargs):
+    def get(self, request, *args, **kwargs):
         return Response({"message": "CSRF cookie set"})
 
 
@@ -234,7 +244,7 @@ class AdminSignIn(APIView):
                         "username": user.username,
                         "email": user.email,
                         "access": tokens["access"],
-                        "is_admin":True,
+                        "is_admin": True,
                     },
                 },
                 status=status.HTTP_200_OK,
@@ -246,4 +256,108 @@ class AdminSignIn(APIView):
         return Response(
             {"status": "error", "message": "Validation failed"},
             status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class AdminUsersList(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        try:
+            search = request.query_params.get("q", "")
+
+            users = User.objects.filter(is_staff=False)
+
+            if search:
+                users = users.filter(
+                    Q(username__icontains=search) | Q(email__icontains=search)
+                )
+
+            paginator = PageNumberPagination()
+            paginator.page_size = 5
+            result_page = paginator.paginate_queryset(users, request)
+
+            serializer = UserSerializer(result_page, many=True)
+
+            return paginator.get_paginated_response(serializer.data)
+
+        except DatabaseError:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Database error occurred while fetching users.",
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong while fetching users.",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class ToggleUserStatus(APIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, user_id):
+        try:
+            action = request.data.get("action")
+
+            if action not in ["activate", "deactivate"]:
+                return Response(
+                    {"success": False, "message": "Invalid action"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            if request.user.id == user_id:
+                return Response(
+                    {
+                        "success": False,
+                        "message": "Admin cannot deactivate themselves.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            user = get_object_or_404(User, id=user_id)
+
+            # Update active status
+            user.is_active = action == "activate"
+            user.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": f"User {action}d successfully",
+                    "is_active": user.is_active,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": "Something went wrong",
+                    "error": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class AdminDashboardStats(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        return Response(
+            {
+                "total_users": User.objects.count(),
+                "total_posts": Blog.objects.filter(is_deleted=False).count(),
+                "total_comments": Comment.objects.count(),
+                "total_likes": Like.objects.filter(reaction="like").count(),
+            }
         )

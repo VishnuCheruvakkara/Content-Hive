@@ -1,20 +1,39 @@
 from django.urls import path
-from .views import CreateBlog,DocumentUpload,ImageUpload,GetUsersBlogs,GetSingleBlog,UpdateBlog,DeleteBlog,ExploreBlogs,ToggleLike,ToggleDislike,AddComment
+from .views import (
+    CreateBlog,
+    DocumentUpload,
+    ImageUpload,
+    GetUsersBlogs,
+    GetSingleBlog,
+    UpdateBlog,
+    DeleteBlog,
+    ExploreBlogs,
+    ToggleLike,
+    ToggleDislike,
+    AddComment,
+    AdminBlogList,
+    DeleteComment,
+)
+
 urlpatterns = [
     path("create-blog/", CreateBlog.as_view(), name="create-blog"),
-
     path("upload-image/", ImageUpload.as_view(), name="upload-image"),
     path("upload-file/", DocumentUpload.as_view(), name="upload-file"),
-
     path("create-blog/", CreateBlog.as_view(), name="create-blog"),
     path("get-users-blog/", GetUsersBlogs.as_view(), name="get-users-blog"),
-    path("get-single-blog/<int:blog_id>/", GetSingleBlog.as_view(), name="get-single-blog"),
+    path(
+        "get-single-blog/<int:blog_id>/",
+        GetSingleBlog.as_view(),
+        name="get-single-blog",
+    ),
     path("update-blog/<int:id>/", UpdateBlog.as_view(), name="update-blog"),
     path("delete-blog/<int:id>/", DeleteBlog.as_view(), name="delete-blog"),
     path("explore-blogs/", ExploreBlogs.as_view(), name="explore-blogs"),
-    path("toggle-like/<int:blog_id>/", ToggleLike.as_view(), name="toggle-like"), 
-    path("toggle-dislike/<int:blog_id>/", ToggleDislike.as_view(), name="toggle-dislike"),
-
+    path("toggle-like/<int:blog_id>/", ToggleLike.as_view(), name="toggle-like"),
+    path(
+        "toggle-dislike/<int:blog_id>/", ToggleDislike.as_view(), name="toggle-dislike"
+    ),
     path("add-comment/<int:blog_id>/", AddComment.as_view(), name="add-comment"),
-
+    path("admin-blogs/", AdminBlogList.as_view(), name="admin-blogs"),
+    path("delete-comment/<int:id>/", DeleteComment.as_view(), name="delete-comment"),
 ]

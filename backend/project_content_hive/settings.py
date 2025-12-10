@@ -18,7 +18,6 @@ from datetime import timedelta
 import cloudinary
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -58,7 +57,6 @@ INSTALLED_APPS = [
     # Custom apps
     "users",
     "blog",
-
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -113,8 +111,8 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 5  # default page size
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,  # default page size
 }
 
 SIMPLE_JWT = {
@@ -140,7 +138,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 # CSRF_COOKIE_SECURE = True
 # CSRF_COOKIE_SAMESITE = "None"
-# CSRF_COOKIE_HTTPONLY = False 
+# CSRF_COOKIE_HTTPONLY = False
 # SESSION_COOKIE_SAMESITE = "None"
 
 
@@ -202,7 +200,7 @@ LOGGING = {
 }
 
 
-# Cloudinary configurations 
+# Cloudinary configurations
 cloudinary.config(
     cloud_name=env("CLOUDINARY_CLOUD_NAME"),
     api_key=env("CLOUDINARY_API_KEY"),

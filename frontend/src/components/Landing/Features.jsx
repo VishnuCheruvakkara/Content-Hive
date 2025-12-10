@@ -2,9 +2,9 @@ import React from 'react'
 
 function Features() {
     const items = [
-    { title: "REST APIs", desc: "Django / FastAPI-compatible REST APIs with JWT/OAuth security." },
+    { title: "REST APIs", desc: "Django / FastAPI-compatible REST APIs with JWT security." },
     { title: "Admin Console", desc: "Manage users, posts, comments with approval workflows." },
-    { title: "Media Uploads", desc: "Attach images/files and store on cloud (S3/Azure Blob)." },
+    { title: "Media Uploads", desc: "Attach images/files and store on cloud" },
     { title: "Interactions", desc: "Comments, likes, read-counts, and feedback system." },
   ];
 

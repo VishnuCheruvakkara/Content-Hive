@@ -1,16 +1,17 @@
 from rest_framework import serializers
 import os
 from rest_framework import serializers
-from blog.models import Blog,Comment
-from django.contrib.auth import get_user_model 
+from blog.models import Blog, Comment
+from django.contrib.auth import get_user_model
 from .validators import validate_title, validate_description, validate_content
 
-User=get_user_model()
+User = get_user_model()
+
 
 class ImageUploadSerializer(serializers.Serializer):
     file = serializers.ImageField()
 
-    MAX_SIZE_MB = 5 
+    MAX_SIZE_MB = 5
 
     def validate_file(self, file):
         # Validate MIME type
@@ -27,7 +28,9 @@ class ImageUploadSerializer(serializers.Serializer):
         # Validate size
         max_bytes = self.MAX_SIZE_MB * 1024 * 1024
         if file.size > max_bytes:
-            raise serializers.ValidationError(f"File too large. Max size: {self.MAX_SIZE_MB}MB")
+            raise serializers.ValidationError(
+                f"File too large. Max size: {self.MAX_SIZE_MB}MB"
+            )
 
         # Sanitize filename
         file.name = file.name.replace(" ", "_")
@@ -35,11 +38,10 @@ class ImageUploadSerializer(serializers.Serializer):
         return file
 
 
-
 class DocumentUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
 
-    MAX_SIZE_MB = 10  
+    MAX_SIZE_MB = 10
 
     def validate_file(self, file):
         # Allowed MIME types
@@ -50,9 +52,7 @@ class DocumentUploadSerializer(serializers.Serializer):
         ]
 
         if file.content_type not in allowed_types:
-            raise serializers.ValidationError(
-                "Allowed formats: PDF, DOC, DOCX."
-            )
+            raise serializers.ValidationError("Allowed formats: PDF, DOC, DOCX.")
 
         # Allowed extensions
         allowed_ext = [".pdf", ".doc", ".docx"]
@@ -64,13 +64,16 @@ class DocumentUploadSerializer(serializers.Serializer):
         # Size validation
         max_bytes = self.MAX_SIZE_MB * 1024 * 1024
         if file.size > max_bytes:
-            raise serializers.ValidationError(f"File too large. Max size: {self.MAX_SIZE_MB}MB")
+            raise serializers.ValidationError(
+                f"File too large. Max size: {self.MAX_SIZE_MB}MB"
+            )
 
         # Sanitize filename
         file.name = file.name.replace(" ", "_")
 
         return file
-    
+
+
 class UserMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -94,14 +97,14 @@ class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
         fields = [
-            'id',
-            'title',
-            'description',
-            'content_html',
-            'created_at',
-            'updated_at',
-            'is_published',
-            'created_by',
+            "id",
+            "title",
+            "description",
+            "content_html",
+            "created_at",
+            "updated_at",
+            "is_published",
+            "created_by",
             "like_count",
             "comment_count",
             "is_liked",
@@ -129,6 +132,7 @@ class BlogSerializer(serializers.ModelSerializer):
             return False
 
         return obj.likes.filter(user=request.user, reaction="dislike").exists()
+
 
 class BlogDetailSerializer(serializers.ModelSerializer):
     created_by = UserMiniSerializer(read_only=True)
@@ -196,6 +200,7 @@ class BlogDetailSerializer(serializers.ModelSerializer):
     def get_comments_count(self, obj):
         return obj.comments.filter(is_approved=True).count()
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source="user.username", read_only=True)
     text = serializers.CharField()
@@ -221,11 +226,11 @@ class CommentSerializer(serializers.ModelSerializer):
         user = self.context.get("user")
         blog = self.context.get("blog")
         if not user or not blog:
-            raise serializers.ValidationError("User and blog must be provided in context.")
-        
+            raise serializers.ValidationError(
+                "User and blog must be provided in context."
+            )
+
         comment = Comment.objects.create(
-            blog=blog,
-            user=user,
-            text=validated_data["text"]
+            blog=blog, user=user, text=validated_data["text"]
         )
         return comment

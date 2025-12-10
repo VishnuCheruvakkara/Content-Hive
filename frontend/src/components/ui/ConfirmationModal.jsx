@@ -7,6 +7,7 @@ export default function ConfirmationModal({
     isOpen,
     title,
     message,
+    confirmText = "Delete", // default value
     onConfirm,
     onCancel
 }) {
@@ -23,7 +24,7 @@ export default function ConfirmationModal({
 
             {/* Modal Box */}
             <div className='p-2 bg-brand-2/50 rounded-md z-10000'>
-                <div className="relative bg-brand-2  text-white rounded-md p-6 w-96 shadow-xl">
+                <div className="relative bg-brand-2 text-white rounded-md p-6 w-96 shadow-xl">
                     <h2 className="text-lg font-semibold mb-3">{title}</h2>
                     <p className="text-gray-300 mb-6">{message}</p>
 
@@ -37,11 +38,11 @@ export default function ConfirmationModal({
                         </Button>
 
                         <Button
-                            icon={MdDelete}
-                            className=" px-4 py-2 rounded-sm"
+                            icon={MdDelete} // you can also change icon dynamically if needed
+                            className="px-4 py-2 rounded-sm"
                             onClick={onConfirm}
                         >
-                            Delete
+                            {confirmText}
                         </Button>
                     </div>
                 </div>

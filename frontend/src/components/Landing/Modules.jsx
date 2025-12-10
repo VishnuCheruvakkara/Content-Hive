@@ -2,12 +2,12 @@ import React from 'react'
 
 function Modules() {
     const modules = [
-        { id: 1, title: "DB + API", note: "Design DB, build REST APIs, auth with JWT/OAuth" },
+        { id: 1, title: "DB + API", note: "Design DB, build REST APIs, auth with JWT" },
         { id: 2, title: " FAdmin Views", note: "User management, posts, comments CRUD" },
         { id: 3, title: "Frontend Templates", note: "List/detail pages, responsive UI" },
         { id: 4, title: "Media & Storage", note: "File uploads to S3/Azure, CDN-ready" },
         { id: 5, title: "Interactions", note: "Likes, comments, read counts" },
-        { id: 6, title: "Deployment", note: "CI, GitHub + Hosting (optional)" },
+        { id: 6, title: "Deployment", note: "CI, GitHub + Hosting" },
     ];
     return (
         <section id="modules" className="py-16">

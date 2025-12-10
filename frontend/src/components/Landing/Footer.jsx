@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaHive } from "react-icons/fa6";
 
 function Footer() {
     return (
@@ -6,8 +7,9 @@ function Footer() {
             <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">CH</div>
-                        <div className="font-semibold">ContentHive</div>
+                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">
+                            <FaHive size={30} />
+                        </div>
                     </div>
                     <p className="text-white/80 text-sm">A simple CMS to write, publish and grow your audience. Built for MARLO Python exercise.</p>
                 </div>
@@ -32,7 +34,7 @@ function Footer() {
                 </div>
             </div>
 
-            <div className="mt-8 border-t border-white/20 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive — Built for MARLO exercise</div>
+            <div className="mt-8 border-t border-white/20 pt-6 text-center text-sm text-white/70">© {new Date().getFullYear()} ContentHive - Built for MARLO exercise</div>
         </footer>
     )
 }
