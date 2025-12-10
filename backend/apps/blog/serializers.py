@@ -117,7 +117,7 @@ class BlogSerializer(serializers.ModelSerializer):
         return obj.likes.filter(reaction="like").count()
 
     def get_comment_count(self, obj):
-        return obj.comments.count()
+        return obj.comments.filter(is_deleted=False).count()
 
     def get_is_liked(self, obj):
         request = self.context.get("request")
@@ -184,7 +184,7 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         return obj.likes.filter(user=user, reaction="dislike").exists()
 
     def get_comments(self, obj):
-        comments = obj.comments.filter(is_approved=True).order_by("-created_at")
+        comments = obj.comments.filter(is_approved=True, is_deleted=False).order_by("-created_at")
 
         return [
             {
@@ -198,7 +198,7 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_comments_count(self, obj):
-        return obj.comments.filter(is_approved=True).count()
+        return obj.comments.filter(is_approved=True, is_deleted=False).count()
 
 
 class CommentSerializer(serializers.ModelSerializer):
