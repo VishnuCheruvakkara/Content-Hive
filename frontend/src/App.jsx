@@ -1,17 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom';
+import RouterConfig from './routes/RouterConfig';
+import { Toaster } from 'react-hot-toast';
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
+import Spinner from './components/ui/Spinner';
+import useCSRF from './hooks/useCSRF';
+import NavigationRegistrar from './services/Navigation/NavigationRegistrar';
+import CustomToaster from './components/ui/CustomToaster';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // initialize CSRF token on app load
+  useCSRF();
 
   return (
     <>
-      <div className="p-8 text-center">
-        <h1 className="text-4xl font-bold text-blue-600">
-          Tailwind v4 with Vite + React ✔
-        </h1>
-      </div>
+      <Provider store={store}>
+        <PersistGate loading={<Spinner />} persistor={persistor}>
+          <BrowserRouter>
+            <NavigationRegistrar />
+            <CustomToaster />
+            <RouterConfig />
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
     </>
   )
 }

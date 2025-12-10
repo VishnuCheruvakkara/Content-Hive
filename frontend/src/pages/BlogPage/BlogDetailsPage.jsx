@@ -1,0 +1,283 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import userAuthenticateAxios from "../../axios/UserAuthenticateAxios";
+import FormattedDate from "../../components/ui/FormattedData";
+import Button from "../../components/ui/Button";
+import TipTapViewer from "../../components/TipTapEditor/TipTapViewer";
+import Spinner from "../../components/ui/Spinner";
+import Breadcrumb from "../../components/ui/BreadCrumb";
+import { FiEdit, FiArrowLeft } from "react-icons/fi";
+import NoDataFallback from "../../components/ui/NoDataFallback";
+import { MdDelete } from "react-icons/md";
+import ConfirmationModal from "../../components/ui/ConfirmationModal";
+import toast from "react-hot-toast";
+import useAuth from "../../hooks/useAuth";
+import BlogInteractionBar from "../../components/ui/BloggerInteractionBar";
+
+export default function BlogDetailsPage() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [blog, setBlog] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user, isAdmin } = useAuth();
+    const location = useLocation();
+    const from = location.state?.from || "/user/dashboard";
+
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+
+    const [isDisliked, setIsDisliked] = useState(false);
+
+    const [comments, setComments] = useState([]);
+
+    const fetchBlog = async () => {
+        try {
+            setLoading(true);
+            const response = await userAuthenticateAxios.get(`/blog/get-single-blog/${id}/`);
+            setBlog(response.data.data);
+            setLikeCount(response?.data?.data?.likes_count);
+            setIsLiked(response?.data?.data?.is_liked_by_user);
+            setIsDisliked(response?.data?.data?.is_disliked_by_user)
+            setComments(response?.data?.data?.comments);
+        } catch (error) {
+            // console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleLike = async () => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/toggle-like/${id}/`
+            );
+
+            const { is_liked, likes_count } = response.data;
+
+            setIsLiked(is_liked);
+            setLikeCount(likes_count);
+
+            if (is_liked) {
+                setIsDisliked(false);
+            }
+
+            if (is_liked) {
+                toast.success("Liked");
+            } else {
+                toast.success("Removed Like");
+            }
+        } catch (error) {
+            // console.error(error);
+        }
+    };
+
+    const handleDislike = async () => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/toggle-dislike/${id}/`
+            );
+
+            const { is_disliked, likes_count } = response.data;
+            setIsDisliked(is_disliked);
+            setLikeCount(likes_count)
+
+            if (is_disliked) {
+                setIsLiked(false);
+                toast.success("Disliked");
+            } else {
+                toast.success("Removed Dislike");
+            }
+        } catch (error) {
+            // console.error(error);
+            toast.error("Something went wrong!");
+        }
+    };
+
+    const handleAddComment = async (text) => {
+        try {
+            const response = await userAuthenticateAxios.post(
+                `/blog/add-comment/${id}/`,
+                { text: text }
+            );
+
+            const newComment = response.data.comment;
+            setComments((prev) => [newComment, ...prev]);
+
+            toast.success("Comment added!");
+        } catch (err) {
+            // console.log(err);
+            toast.error("Failed to add comment");
+        }
+    };
+
+
+    useEffect(() => {
+        fetchBlog();
+    }, [id]);
+
+    let breadcrumbItems;
+
+    if (from === "admin") {
+        // admin breadcrumb
+        breadcrumbItems = [
+            { label: "Dashboard", link: "/" },
+            { label: "All Blogs", link: "/admin/dashboard/blogs" },
+            { label: "Blog Details" }
+        ];
+    }
+    else if (from === "explore") {
+        // user explore
+        breadcrumbItems = [
+            { label: "Home", link: "/" },
+            { label: "Explore Posts", link: "/user/dashboard/explore" },
+            { label: "Blog Details" }
+        ];
+    }
+    else {
+        // user my posts
+        breadcrumbItems = [
+            { label: "Home", link: "/" },
+            { label: "My Blog Posts", link: "/user/dashboard" },
+            { label: "Blog Details" }
+        ];
+    }
+
+    if (loading) return <Spinner />
+
+    if (!blog && !loading) {
+        return (
+            <NoDataFallback
+                message="No blog found."
+                image="/no_search.svg"
+                onBack={() => navigate(-1)}
+            />
+        );
+    }
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await userAuthenticateAxios.delete(
+                `/blog/delete-comment/${commentId}/`
+            );
+
+            setComments((prev) => prev.filter((c) => c.id !== commentId));
+
+            toast.success("Comment deleted successfully");
+        } catch (error) {
+            // console.error(error);
+            toast.error("Failed to delete comment");
+        }
+    };
+
+
+    const handleDelete = async () => {
+        try {
+            setLoading(true);
+            await userAuthenticateAxios.patch(`/blog/delete-blog/${id}/`);
+            toast.success("Blog deleted successfully");
+            if (isAdmin) {
+                navigate("/admin/dashboard/blogs");
+            } else {
+                navigate("/user/dashboard");
+            }
+        } catch (error) {
+            // console.error(error);
+            toast.error("Failed to delete the blog");
+        } finally {
+            setLoading(false);
+            setIsModalOpen(false);
+        }
+    };
+
+    return (
+        <div className="p-6 relative">
+            <Breadcrumb items={breadcrumbItems} />
+
+            {/* User Details */}
+            <div className="flex items-center mb-6 mt-4">
+                {/* User Initial */}
+                <div className="w-12 h-12 bg-brand-3 text-white flex items-center justify-center rounded-lg text-xl font-bold">
+                    {blog?.created_by?.username?.charAt(0)?.toUpperCase()}
+                </div>
+
+                {/* User Info */}
+                <div className="ml-3">
+                    <p className="text-white font-semibold text-lg">
+                        {blog?.created_by?.username}
+                        {user?.id === blog?.created_by?.id && (
+                            <span className="text-brand-3 font-bold ml-1">(You)</span>
+                        )}
+                    </p>
+
+                    <p className="text-gray-400 text-sm">
+                        Published on <FormattedDate dateString={blog?.created_at} />
+                    </p>
+                </div>
+            </div>
+
+            {/* Divider */}
+            <hr className="border-gray-500 mb-6" />
+
+
+            {/* Top Right Edit Button */}
+            {(isAdmin || blog?.created_by?.id === user?.id) && (
+                <div className="absolute right-6 top-6 flex space-x-4">
+                    <Button
+                        icon={FiEdit}
+                        className="px-4 py-2 rounded-sm"
+                        onClick={() => navigate(`../edit-blog/${id}`, { state: { from: isAdmin ? "admin" : "user" } })}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        icon={MdDelete}
+                        className="px-4 py-2 bg-brand-3 text-white rounded-sm"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
+            )}
+
+            <div className="mb-6 bg-white/10 rounded-md p-3 overflow-x-hidden">
+                <TipTapViewer content={blog?.content_html} />
+            </div>
+
+            <div className="my-1 border-t border-gray-500" />
+
+            {/* Like / Dislike / Comment Bar */}
+            <BlogInteractionBar
+                likes={likeCount}
+                comments={comments.length}
+                commentList={comments}
+                isLiked={isLiked}
+                isDisliked={isDisliked}
+                onDislike={handleDislike}
+                onLike={handleLike}
+                onAddComment={handleAddComment}
+                viewCount={blog?.view_count}
+                onDeleteComment={handleDeleteComment}
+                blogOwnerId={blog?.created_by?.id}   
+            />
+
+            {/* Back Button */}
+            <div className="mt-6">
+                <Button
+                    icon={FiArrowLeft}
+                    className="px-4 py-2 rounded-sm"
+                    onClick={() => navigate("/users/dashboard")}
+                >
+                    Back to Blogs
+                </Button>
+            </div>
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                title="Delete Blog"
+                message="Are you sure you want to delete this blog? This action cannot be undone."
+                onConfirm={handleDelete}
+                onCancel={() => setIsModalOpen(false)}
+            />
+        </div>
+    );
+}
