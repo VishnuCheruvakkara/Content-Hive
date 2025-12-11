@@ -2,6 +2,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import PropTypes from 'prop-types';
+import { MdLogout } from "react-icons/md";
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { logoutSuccess } from "../../redux/Slice/userAuthSlice";
+import publicAxios from "../../axios/PublicAxios";
+import useAuth from "../../hooks/useAuth";
 
 const Sidebar = ({
     menuItems = [],
@@ -14,20 +21,34 @@ const Sidebar = ({
 }) => {
 
     const isOpen = sidebarOpen !== null ? sidebarOpen : defaultOpen;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { isAdmin } = useAuth();
 
-   
     const handleLinkClick = () => {
-       
         if (window.innerWidth < 1024 && onToggleClick) {
             onToggleClick();
         }
     };
 
-    
     const handleOverlayClick = () => {
-        
         if (window.innerWidth < 1024 && onToggleClick) {
             onToggleClick();
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await publicAxios.post("/users/logout/");
+            dispatch(logoutSuccess());
+            toast.success("Logged out successfully");
+            if (isAdmin) {
+                navigate("/admin-login");
+            } else {
+                navigate("/login");
+            }
+        } catch (err) {
+            toast.error("Something went wrong while logging out.");
         }
     };
 
@@ -40,7 +61,7 @@ const Sidebar = ({
                     onClick={handleOverlayClick}
                 />
             )}
-            
+
             {/* Sidebar */}
             <aside
                 className={`fixed lg:sticky h-[calc(100vh-70px)] lg:h-screen inset-y-0 left-0 lg:top-0 top-[70px] z-40 ${isOpen ? "w-64" : "w-20"
@@ -108,9 +129,26 @@ const Sidebar = ({
                         ))}
                     </nav>
 
+                    {/* Logout Button - Added above user info */}
+                    <div className="mt-auto md:hidden">
+                        <button
+                            onClick={handleLogout}
+                            className={`flex items-center ${isOpen ? "space-x-3 px-4" : "justify-center px-2"
+                                } py-3 w-full rounded-lg transition-colors  hover:bg-brand-1 cursor-pointer  text-white`}
+                            title={!isOpen ? "Logout" : ""}
+                        >
+                            <span className="text-lg shrink-0">
+                                <MdLogout />
+                            </span>
+                            {isOpen && (
+                                <span className="font-medium truncate">Logout</span>
+                            )}
+                        </button>
+                    </div>
+
                     {/* User Info Section */}
                     {userInfo && (
-                        <div className="mt-10 pt-6 border-t border-gray-700">
+                        <div className="mt-4 pt-6 border-t border-gray-700">
                             <div className={`px-4 ${!isOpen && "text-center"}`}>
                                 {isOpen ? (
                                     <>
@@ -122,7 +160,7 @@ const Sidebar = ({
                                     </>
                                 ) : (
                                     <div className="flex flex-col items-center">
-                                        <div 
+                                        <div
                                             className="w-8 h-8 rounded-full bg-brand-1 flex items-center justify-center mb-2 cursor-pointer hover:bg-brand-1/80 transition-colors"
                                             title={userInfo.name}
                                         >

@@ -10,7 +10,6 @@ import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
 import { FaBars, FaTimes } from 'react-icons/fa'
 import { MdLogout } from "react-icons/md";
-import { FaHive } from "react-icons/fa6";
 
 function Header({ sidebarOpen, onToggleSidebar }) {
     const { isAuthenticated, user } = useAuth();
