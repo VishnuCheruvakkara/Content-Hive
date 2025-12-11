@@ -13,7 +13,7 @@ import { MdLogout } from "react-icons/md";
 import { FaHive } from "react-icons/fa6";
 
 function Header({ sidebarOpen, onToggleSidebar }) {
-    const { isAuthenticated,user } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
@@ -53,11 +53,19 @@ function Header({ sidebarOpen, onToggleSidebar }) {
                     }
 
                     <Link to="/" className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-brand-4 flex items-center justify-center text-brand-1 font-bold">
-                            <FaHive size={ 30 } />
+                        <div className="w-10 h-10 rounded-lg bg-white  flex items-center justify-center overflow-hidden shadow-black/50 shadow-md">
+                            <img
+                                src="/content_hive_icon.svg"
+                                alt="ContentHive Logo"
+                                className="w-8 h-8 object-contain"
+                            />
                         </div>
-                        <div className="text-white font-semibold tracking-wide">ContentHive</div>
+
+                        <div className="text-white font-semibold tracking-wide">
+                            ContentHive
+                        </div>
                     </Link>
+
                 </div>
 
                 {!isAuthenticated && showLandingNav && (
@@ -102,8 +110,8 @@ function Header({ sidebarOpen, onToggleSidebar }) {
                             )}
 
                             {/* Logout Button */}
-                                <Button
-                                icon={MdLogout }
+                            <Button
+                                icon={MdLogout}
                                 onClick={handleLogout}
                                 className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
                             >
