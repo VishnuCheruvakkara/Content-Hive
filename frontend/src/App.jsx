@@ -7,7 +7,7 @@ import { store, persistor } from "./redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import Spinner from './components/ui/Spinner';
 import useCSRF from './hooks/useCSRF';
-import NavigationRegistrar from './services/Navigation/NavigationRegistrar';
+import NavigationRegistrar from './services/navigation/NavigationRegistrar';
 import CustomToaster from './components/ui/CustomToaster';
 
 function App() {
