@@ -1,5 +1,4 @@
 import React from 'react'
-import MobileMenu from './MobileMenu'
 import Button from '../ui/Button'
 import { useNavigate, useLocation } from 'react-router-dom'
 import publicAxios from '../../axios/PublicAxios'
@@ -122,7 +121,12 @@ function Header({ sidebarOpen, onToggleSidebar }) {
 
                 {/* Mobile menu button */}
                 <div className="md:hidden">
-                    <MobileMenu />
+                    <Button
+                        onClick={() => navigate("/login")}
+                        className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
+                    >
+                        Login
+                    </Button>
                 </div>
             </div>
         </header>
