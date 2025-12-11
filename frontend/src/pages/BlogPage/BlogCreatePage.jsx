@@ -55,7 +55,7 @@ function BlogCreatePage() {
     <>
       {loading && <Spinner />}
 
-      <div className="p-4">
+      <div className="sm:p-4">
         <Breadcrumb items={breadcrumbItems} />
         <TipTapEditor onSubmit={handleSubmit} />
       </div>

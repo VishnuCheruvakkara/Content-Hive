@@ -58,7 +58,7 @@ export default function BlogListPage({
     }, [debouncedSearch]);
 
     return (
-        <div className="p-4">
+        <div className="sm:p-4">
             <Breadcrumb items={breadcrumbItems} />
 
             <div className="flex items-center justify-between mb-4">

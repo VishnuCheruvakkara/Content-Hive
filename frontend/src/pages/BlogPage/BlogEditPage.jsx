@@ -73,7 +73,7 @@ export default function BlogEditPage() {
     if (loading) return <Spinner />;
 
     return (
-        <div className="p-4">
+        <div className="sm:p-4">
             <Breadcrumb items={breadcrumbItems} />
 
             <TipTapEditor

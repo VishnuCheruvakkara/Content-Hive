@@ -121,12 +121,14 @@ function Header({ sidebarOpen, onToggleSidebar }) {
 
                 {/* Mobile menu button */}
                 <div className="md:hidden">
-                    <Button
-                        onClick={() => navigate("/login")}
-                        className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
-                    >
-                        Login
-                    </Button>
+                    {!isAuthenticated && (
+                        <Button
+                            onClick={() => navigate("/login")}
+                            className="px-4 py-2 rounded-lg bg-brand-4 transition font-medium"
+                        >
+                            Login
+                        </Button>
+                    )}
                 </div>
             </div>
         </header>

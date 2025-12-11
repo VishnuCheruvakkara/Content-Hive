@@ -89,7 +89,7 @@ export default function UserManagementPage() {
     };
 
     return (
-        <div className="p-4">
+        <div>
             {/* Breadcrumb */}
             <Breadcrumb items={breadcrumbItems} />
 

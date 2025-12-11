@@ -113,7 +113,7 @@ export default function BlogInteractionBar({
                 `}
             >
                 {open && (
-                    <div className="mt-3 bg-white/10 p-4 rounded-md border border-gray-700">
+                    <div className="mt-3 bg-white/10 p-2 sm:p-4rounded-md border border-gray-700">
                         <h4 className="text-white font-semibold mb-3">Comments</h4>
 
                         {/* Add Comment Input */}
@@ -139,7 +139,7 @@ export default function BlogInteractionBar({
                         {commentList.length === 0 ? (
                             <p className="text-gray-400 text-sm">No comments yet.</p>
                         ) : (
-                            <div className="max-h-[400px]   overflow-y-auto pr-2 custom-scrollbar space-y-4">
+                            <div className="max-h-[400px]   overflow-y-auto  custom-scrollbar space-y-4">
                                 {commentList.map((c, index) => (
                                     <div
                                         key={index}

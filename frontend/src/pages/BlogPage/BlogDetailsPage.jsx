@@ -191,7 +191,7 @@ export default function BlogDetailsPage() {
     };
 
     return (
-        <div className="p-6 relative">
+        <div className="sm:p-4 relative">
             <Breadcrumb items={breadcrumbItems} />
 
             {/* User Details */}

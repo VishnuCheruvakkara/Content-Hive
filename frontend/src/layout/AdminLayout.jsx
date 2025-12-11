@@ -53,7 +53,7 @@ function AdminLayout() {
                 />
 
                 {/* Main Content */}
-                <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
+                <main className="flex-1 sm:p-6 p-2 lg:p-8 overflow-y-auto">
                     <div className="max-w-6xl mx-auto">
                         {/* This is where nested route components will render */}
                         <Outlet />
