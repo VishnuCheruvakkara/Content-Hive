@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "../redux/store";
 import { loginSuccess, logoutSuccess } from "../redux/Slice/userAuthSlice";
 import { getCookie } from "../utils/getCookie";
-import { navigateTo } from "../services/Navigation/NavigationService";
+import { navigateTo } from "../services/navigation/NavigationService";
 
 let isSessionExpiredHandled = false;
 
