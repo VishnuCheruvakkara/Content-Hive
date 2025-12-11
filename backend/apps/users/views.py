@@ -355,7 +355,7 @@ class AdminDashboardStats(APIView):
     def get(self, request):
         return Response(
             {
-                "total_users": User.objects.count(),
+                "total_users": User.objects.filter(is_staff=False, is_superuser=False).count(),
                 "total_posts": Blog.objects.filter(is_deleted=False).count(),
                 "total_comments": Comment.objects.count(),
                 "total_likes": Like.objects.filter(reaction="like").count(),
