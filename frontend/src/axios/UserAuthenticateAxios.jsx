@@ -3,44 +3,50 @@ import { store } from "../redux/store";
 import { loginSuccess, logoutSuccess } from "../redux/Slice/userAuthSlice";
 import { getCookie } from "../utils/getCookie";
 import { navigateTo } from "../services/navigation/NavigationService";
+import toast from "react-hot-toast";
 
 let isSessionExpiredHandled = false;
 
+// Normal axios instance
 const userAuthenticateAxios = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
-userAuthenticateAxios.interceptors.request.use(
-  (config) => {
-    const { access } = store.getState().userAuth;
+// Dedicated refresh axios (NO INTERCEPTORS)
+const refreshAxios = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
+});
 
-    if (access && !config.skipAuthRefresh) {
-      config.headers["Authorization"] = `Bearer ${access}`;
-    }
+userAuthenticateAxios.interceptors.request.use((config) => {
+  const { access } = store.getState().userAuth;
 
-    const csrf = getCookie("csrftoken");
-    if (csrf) config.headers["X-CSRFToken"] = csrf;
+  if (access && !config.skipAuthRefresh) {
+    config.headers["Authorization"] = `Bearer ${access}`;
+  }
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  const csrf = getCookie("csrftoken");
+  if (csrf) config.headers["X-CSRFToken"] = csrf;
 
+  return config;
+});
+
+// RESPONSE INTERCEPTOR
 userAuthenticateAxios.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
+
+
+    // Token expired → try refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        const refreshRes = await userAuthenticateAxios.post(
-          "/users/token-refresh/",
-          {},
-          { skipAuthRefresh: true }
-        );
+        // Use the clean axios without interceptors
+        const refreshRes = await refreshAxios.post("/users/token-refresh/", {});
 
         const data = refreshRes.data.data;
 
@@ -52,14 +58,20 @@ userAuthenticateAxios.interceptors.response.use(
               username: data.username,
               email: data.email,
               is_admin: data.is_admin,
-            }
+            },
           })
         );
 
         originalRequest.headers["Authorization"] = `Bearer ${data.access}`;
+
         return userAuthenticateAxios(originalRequest);
 
       } catch (err) {
+        if (err.response?.status === 403 && err.response?.data?.status === "blocked") {
+          toast.error("Your account is blocked. Contact support.");
+          store.dispatch(logoutSuccess());
+          navigateTo("/login");
+        }
         if (!isSessionExpiredHandled) {
           isSessionExpiredHandled = true;
           store.dispatch(logoutSuccess());

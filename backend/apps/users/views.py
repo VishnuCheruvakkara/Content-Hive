@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.contrib.auth import get_user_model
-from .serializers import SignUpSerializer, LoginSerializer, UserSerializer
+from .serializers import SignUpSerializer, LoginSerializer, UserSerializer,CustomTokenRefreshSerializer
 from .utils import (
     generate_tokens_for_user,
     set_refresh_token_cookie,
@@ -93,11 +93,27 @@ class SignIn(APIView):
             email = serializer.validated_data["email"]
             password = serializer.validated_data["password"]
 
+            try:
+                user_obj = User.objects.get(email=email)
+            except User.DoesNotExist:
+                return Response(
+                    {"status": "error", "message": "Invalid credentials."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            
+            if not user_obj.is_active:
+                return Response(
+                    {
+                        "status": "blocked",
+                        "message": "Your account is blocked. Contact support.",
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             user = authenticate(request, email=email, password=password)
 
             if user is None:
                 return Response(
-                    {"status": "error", "message": "Invalid email or password"},
+                    {"status": "error", "message": "Invalid credentials."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
 
@@ -143,6 +159,7 @@ class Logout(APIView):
 
 
 class CustomTokenRefresh(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
 
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE"])
@@ -168,6 +185,15 @@ class CustomTokenRefresh(TokenRefreshView):
             token_obj = RefreshToken(new_refresh)
             user_id = token_obj["user_id"]
             user = User.objects.get(id=user_id)
+
+            if not user.is_active:
+                return Response(
+                    {
+                        "status": "blocked",
+                        "message": "Your account is blocked. Contact support.",
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
             res = Response(
                 {
@@ -368,13 +394,7 @@ class AdminDashboardStats(APIView):
 
 # Google authentication views 
 class GoogleCallbackAPI(APIView):
-    """
-    SPA-friendly Google login:
-    - Receive access_token from frontend
-    - Fetch user info from Google
-    - Create or get user
-    - Generate JWT & set HttpOnly refresh cookie
-    """
+
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -401,7 +421,12 @@ class GoogleCallbackAPI(APIView):
             
             user, _ = User.objects.get_or_create(email=email, defaults={"username": name})
 
-           
+            if not user.is_active:
+                return Response({
+                    "status": "blocked",
+                    "message": "Your account is blocked. Contact support.",
+                }, status=403) 
+            
             tokens = generate_tokens_for_user(user)
 
             response = Response({

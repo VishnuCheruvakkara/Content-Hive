@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .validators import validate_password, validate_username, validate_email
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -34,3 +36,19 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
             "is_active",
         ]
+
+
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+    def validate(self, attrs):
+        """
+        Override default validation to REMOVE SimpleJWT's automatic
+        inactive user blocking.
+        """
+        refresh = RefreshToken(attrs["refresh"])
+
+        data = {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }
+
+        return data

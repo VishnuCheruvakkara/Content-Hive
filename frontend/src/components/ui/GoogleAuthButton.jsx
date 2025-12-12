@@ -6,6 +6,8 @@ import { loginSuccess } from "../../redux/Slice/userAuthSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import Spinner from "../../components/ui/Spinner"
+import InlineSpinner from "../../components/ui/InlineSpinner"
 
 export default function GoogleAuthButton() {
     const dispatch = useDispatch();
@@ -40,7 +42,11 @@ export default function GoogleAuthButton() {
                 navigate("/user/dashboard/");
             } catch (err) {
                 // console.error("Google login error:", err);
-                toast.error("Google login failed!");
+                if (err.response?.data?.status === "blocked") {
+                    toast.error("Your account is blocked. Contact support.");
+                } else {
+                    toast.error("Google login failed!");
+                }
             } finally {
                 setLoading(false);
             }
@@ -48,6 +54,9 @@ export default function GoogleAuthButton() {
         onError: () => toast.error("Google Login Failed"),
     });
 
+    if (loading) {
+        return <InlineSpinner/>
+    }
     return (
         <button
             onClick={() => login()}
@@ -59,7 +68,7 @@ export default function GoogleAuthButton() {
                 <FcGoogle size={24} />
             </span>
             <span className="flex-1 text-center -translate-x-3">
-                {loading ? "Signing in..." : "Continue with Google"}
+                {loading ?  <InlineSpinner/> : "Continue with Google"}
             </span>
         </button>
 

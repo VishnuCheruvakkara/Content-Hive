@@ -58,7 +58,11 @@ function UserLogin() {
 
 
         } catch (error) {
-            toast.error("Invalid credentials.");
+            if (error.response?.data?.status === "blocked") {
+                    toast.error("Your account is blocked. Contact support.");
+                } else {
+                    toast.error("Invalid credentials!");
+                }
         } finally {
             setLoading(false);
         }
