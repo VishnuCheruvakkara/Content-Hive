@@ -96,9 +96,7 @@ WSGI_APPLICATION = "project_content_hive.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 # PostgreSQL Database Configuration
 
-DATABASES = {
-    "default": env.db("DATABASE_URL")
-}
+DATABASES = {"default": env.db("DATABASE_URL")}
 
 # DATABASES = {
 #     "default": {
@@ -216,3 +214,9 @@ cloudinary.config(
 SUPABASE_URL = env("SUPABASE_URL")
 SUPABASE_KEY = env("SUPABASE_KEY")
 SUPABASE_BUCKET = env("SUPABASE_BUCKET")
+
+# Set up for google authentication
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = env("GOOGLE_REDIRECT_URI")
