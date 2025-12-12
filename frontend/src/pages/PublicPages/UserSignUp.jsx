@@ -3,7 +3,7 @@ import Header from "../../components/Landing/Header";
 import Footer from "../../components/Landing/Footer";
 import InputField from "../../components/ui/InputField";
 import Button from "../../components/ui/Button";
-import GoogleButton from "../../components/ui/GoogleButton";
+import GoogleAuthButton from "../../components/ui/GoogleAuthButton";
 import { Link } from "react-router-dom";
 
 import { MdEmail } from "react-icons/md";
@@ -146,13 +146,13 @@ function UserSignup() {
                     </Formik>
 
 
-                    {/* <div className="my-6 flex items-center gap-4">
+                    <div className="my-6 flex items-center gap-4">
                         <div className="flex-1 h-px bg-white/20"></div>
                         <span className="text-white/40 text-sm">OR</span>
                         <div className="flex-1 h-px bg-white/20"></div>
-                    </div> */}
+                    </div> 
 
-                    {/* <GoogleButton /> */}
+                    <GoogleAuthButton />
 
                     <p className="text-center text-white/70 text-sm mt-6">
                         Already have an account?{" "}

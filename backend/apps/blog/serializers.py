@@ -184,7 +184,9 @@ class BlogDetailSerializer(serializers.ModelSerializer):
         return obj.likes.filter(user=user, reaction="dislike").exists()
 
     def get_comments(self, obj):
-        comments = obj.comments.filter(is_approved=True, is_deleted=False).order_by("-created_at")
+        comments = obj.comments.filter(is_approved=True, is_deleted=False).order_by(
+            "-created_at"
+        )
 
         return [
             {
