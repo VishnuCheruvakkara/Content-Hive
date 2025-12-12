@@ -22,9 +22,11 @@ from rest_framework.pagination import PageNumberPagination
 from django.db import DatabaseError
 from django.shortcuts import get_object_or_404
 from blog.models import Blog, Comment, Like
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+import requests
 
 User = get_user_model()
-
 
 class SignUp(APIView):
 
@@ -355,9 +357,68 @@ class AdminDashboardStats(APIView):
     def get(self, request):
         return Response(
             {
-                "total_users": User.objects.filter(is_staff=False, is_superuser=False).count(),
+                "total_users": User.objects.filter(
+                    is_staff=False, is_superuser=False
+                ).count(),
                 "total_posts": Blog.objects.filter(is_deleted=False).count(),
                 "total_comments": Comment.objects.count(),
                 "total_likes": Like.objects.filter(reaction="like").count(),
             }
         )
+
+# Google authentication views 
+class GoogleCallbackAPI(APIView):
+    """
+    SPA-friendly Google login:
+    - Receive access_token from frontend
+    - Fetch user info from Google
+    - Create or get user
+    - Generate JWT & set HttpOnly refresh cookie
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        access_token = request.data.get("access_token")
+        if not access_token:
+            return Response({"error": "Access token not provided"}, status=400)
+
+        try:
+            # Fetch user info from Google
+            user_info_response = requests.get(
+                "https://www.googleapis.com/oauth2/v2/userinfo",
+                headers={"Authorization": f"Bearer {access_token}"}
+            )
+            if user_info_response.status_code != 200:
+                return Response({"error": "Failed to fetch user info from Google"}, status=400)
+
+            user_info = user_info_response.json()
+            email = user_info.get("email")
+            name = user_info.get("name") or email.split("@")[0]
+
+            if not email:
+                return Response({"error": "No email found in Google profile"}, status=400)
+
+            
+            user, _ = User.objects.get_or_create(email=email, defaults={"username": name})
+
+           
+            tokens = generate_tokens_for_user(user)
+
+            response = Response({
+                "status": "success",
+                "message": "Login successful",
+                "data": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "access": tokens["access"],
+                    "is_admin": user.is_staff,
+                }
+            }, status=200)
+
+            set_refresh_token_cookie(response, tokens["refresh"])
+
+            return response
+
+        except Exception as e:
+            return Response({"error": "Authentication failed", "details": str(e)}, status=500)

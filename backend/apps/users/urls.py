@@ -10,6 +10,7 @@ from .views import (
     AdminUsersList,
     ToggleUserStatus,
     AdminDashboardStats,
+    GoogleCallbackAPI
 )
 
 urlpatterns = [
@@ -31,4 +32,9 @@ urlpatterns = [
         AdminDashboardStats.as_view(),
         name="admin-dashboard-stats",
     ),
+
+    # Google auth urls
+
+    path("google/callback/", GoogleCallbackAPI.as_view(), name="google_callback"),
+
 ]
