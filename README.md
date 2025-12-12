@@ -7,7 +7,7 @@ A simple and scalable CMS platform with **React frontend** and **Django backend*
 </p>
 
 <p align="center">
-  <a href="#" target="_blank">
+  <a href="https://contenthive.agriflow.space" target="_blank">
     <img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-c95792?style=for-the-badge&logo=vercel&logoColor=white" />
   </a>
   &nbsp;
@@ -15,7 +15,7 @@ A simple and scalable CMS platform with **React frontend** and **Django backend*
     <img alt="Demo Video" src="https://img.shields.io/badge/Demo%20Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white" />
   </a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/vishnu-cheruvakkara" target="_blank">
+  <a href="https://www.linkedin.com/posts/vishnu-cheruvakkara-231b8b235_contenthive-react-django-activity-7405247809018531840-ks-B?utm_source=share&utm_medium=member_desktop&rcm=ACoAADq6p4UB7yZEvBWQ6nbkRJlURS5jqlFv_yI" target="_blank">
     <img alt="Connect on LinkedIn" src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=logmein&logoColor=white" />
   </a>
 </p>
