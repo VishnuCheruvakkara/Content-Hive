@@ -107,7 +107,7 @@ export default function UserManagementPage() {
             {/* Loading / No Data / Table */}
             {loading ? (
                 <div className="flex justify-center mt-6">
-                    <InlineSpinner size={45} />
+                    <InlineSpinner size={45} className="py-30"/>
                 </div>
             ) : users.length === 0 ? (
                 <NoDataFallback message="No users found." />

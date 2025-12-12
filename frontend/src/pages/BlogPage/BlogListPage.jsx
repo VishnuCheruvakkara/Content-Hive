@@ -83,7 +83,7 @@ export default function BlogListPage({
             />
 
             {loading ? (
-                <InlineSpinner size={45} />
+                <InlineSpinner size={45} className="py-30" />
             ) : blogs.length === 0 ? (
                 <NoDataFallback message="No blogs found." image="/no_search.svg" />
             ) : (

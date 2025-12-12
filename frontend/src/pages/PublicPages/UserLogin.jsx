@@ -59,10 +59,10 @@ function UserLogin() {
 
         } catch (error) {
             if (error.response?.data?.status === "blocked") {
-                    toast.error("Your account is blocked. Contact support.");
-                } else {
-                    toast.error("Invalid credentials!");
-                }
+                toast.error("Your account is blocked. Contact support.");
+            } else {
+                toast.error("Invalid credentials!");
+            }
         } finally {
             setLoading(false);
         }
@@ -80,6 +80,14 @@ function UserLogin() {
 
                     <h2 className="text-3xl font-bold text-center mb-2">ContentHive</h2>
                     <p className="text-center text-white/70 mb-8">Sign in to your account</p>
+
+                    <GoogleAuthButton />
+
+                    <div className="my-6 flex items-center gap-4">
+                        <div className="flex-1 h-px bg-white/20"></div>
+                        <span className="text-white/40 text-sm">OR</span>
+                        <div className="flex-1 h-px bg-white/20"></div>
+                    </div>
 
                     <Formik
                         initialValues={initialValues}
@@ -117,14 +125,6 @@ function UserLogin() {
                             </Form>
                         )}
                     </Formik>
-
-                    <div className="my-6 flex items-center gap-4">
-                        <div className="flex-1 h-px bg-white/20"></div>
-                        <span className="text-white/40 text-sm">OR</span>
-                        <div className="flex-1 h-px bg-white/20"></div>
-                    </div>
-
-                    <GoogleAuthButton />
 
                     <p className="text-center text-white/70 text-sm mt-6">
                         Don’t have an account?{" "}

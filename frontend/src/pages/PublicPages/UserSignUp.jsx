@@ -47,7 +47,7 @@ function UserSignup() {
 
             dispatch(
                 loginSuccess({
-                    access: res.data.data.access, 
+                    access: res.data.data.access,
                     user: {
                         id: res.data.data.id,
                         username: values.username,
@@ -80,6 +80,13 @@ function UserSignup() {
                     <h2 className="text-3xl font-bold text-center mb-2">Create an Account</h2>
                     <p className="text-center text-white/70 mb-8">Join ContentHive today</p>
 
+                    <GoogleAuthButton />
+
+                    <div className="my-6 flex items-center gap-4">
+                        <div className="flex-1 h-px bg-white/20"></div>
+                        <span className="text-white/40 text-sm">OR</span>
+                        <div className="flex-1 h-px bg-white/20"></div>
+                    </div>
 
                     <Formik
                         initialValues={initialValues}
@@ -144,15 +151,6 @@ function UserSignup() {
                             </Form>
                         )}
                     </Formik>
-
-
-                    <div className="my-6 flex items-center gap-4">
-                        <div className="flex-1 h-px bg-white/20"></div>
-                        <span className="text-white/40 text-sm">OR</span>
-                        <div className="flex-1 h-px bg-white/20"></div>
-                    </div> 
-
-                    <GoogleAuthButton />
 
                     <p className="text-center text-white/70 text-sm mt-6">
                         Already have an account?{" "}

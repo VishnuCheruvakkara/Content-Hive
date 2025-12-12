@@ -25,11 +25,7 @@ function Hero() {
                         <a href="#features" className="px-6 py-3 rounded-xl border border-white/20 text-white hover:bg-white/6 transition">Learn More</a>
                     </div>
 
-                    <div className="mt-8 flex flex-wrap gap-4 text-sm text-white/80">
-                        <Stat label="Posts" value="1.2k+" />
-                        <Stat label="Active Users" value="24k" />
-                        <Stat label="Avg. Reads/day" value="7.8k" />
-                    </div>
+                    
                 </div>
 
                 {/* Right - visual card */}
