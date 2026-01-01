@@ -153,7 +153,7 @@ export default function BlogInteractionBar({
                                             <div className="flex justify-between  items-start ">
                                                 <p className="text-white text-sm">{c.user} - <FormattedDate dateString={c.created_at} /></p>
 
-                                                {(isAdmin || user?.id === c.user_id || user?.id === blogOwnerId) && (
+                                                {(isAdmin || user?.id === blogOwnerId) && (
                                                     <span
                                                         className="p-1.5 rounded-lg hover:bg-brand-1 cursor-pointer transition duration-300 shrink-0 ml-2 border border-brand-4/30 "
                                                         onClick={() => {
