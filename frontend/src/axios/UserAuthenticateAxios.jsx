@@ -22,7 +22,7 @@ const refreshAxios = axios.create({
 userAuthenticateAxios.interceptors.request.use((config) => {
   const { access } = store.getState().userAuth;
 
-  if (access && !config.skipAuthRefresh) {
+  if (access) {
     config.headers["Authorization"] = `Bearer ${access}`;
   }
 
@@ -30,6 +30,7 @@ userAuthenticateAxios.interceptors.request.use((config) => {
   if (csrf) config.headers["X-CSRFToken"] = csrf;
 
   return config;
+    
 });
 
 // RESPONSE INTERCEPTOR
@@ -38,14 +39,12 @@ userAuthenticateAxios.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-
-
     // Token expired → try refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // Use the clean axios without interceptors
+        // Clean axios without interceptors
         const refreshRes = await refreshAxios.post("/users/token-refresh/", {});
 
         const data = refreshRes.data.data;

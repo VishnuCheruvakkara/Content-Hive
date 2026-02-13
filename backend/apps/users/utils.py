@@ -10,7 +10,6 @@ def generate_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
-
 def set_refresh_token_cookie(response, refresh_token):
     response.set_cookie(
         key=settings.SIMPLE_JWT["AUTH_COOKIE"],  # cookie name
@@ -20,7 +19,6 @@ def set_refresh_token_cookie(response, refresh_token):
         samesite=settings.SIMPLE_JWT["AUTH_COOKIE_SAMESITE"],  # cross-site requests
         max_age=int(settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()),
     )
-
 
 def remove_refresh_token_cookie(request, response):
     cookie_name = settings.SIMPLE_JWT["AUTH_COOKIE"]
