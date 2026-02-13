@@ -241,7 +241,6 @@ class GetCSRFToken(APIView):
     def get(self, request, *args, **kwargs):
         return Response({"message": "CSRF cookie set"})
 
-
 class AdminSignIn(APIView):
 
     permission_classes = [AllowAny]
